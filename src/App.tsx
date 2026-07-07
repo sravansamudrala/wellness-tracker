@@ -1,9 +1,29 @@
+import Header from "./components/Header";
+import { Routes, Route } from "react-router-dom";
+
+import Dashboard from "./pages/Dashboard";
+import Food from "./pages/Food";
+import Skincare from "./pages/Skincare";
+import Weight from "./pages/Weight";
+import Water from "./pages/Water";
+import History from "./pages/History";
+import Settings from "./pages/Settings";
+
 function App() {
   return (
-    <div>
-      <h1>Wellness Tracker</h1>
-      <p>My first React application  , Hi Sravan🚀</p>
-    </div>
+    <>
+      <Header />
+
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/food" element={<Food />} />
+        <Route path="/skincare" element={<Skincare />} />
+        <Route path="/weight" element={<Weight />} />
+        <Route path="/water" element={<Water />} />
+        <Route path="/history" element={<History />} />
+        <Route path="/settings" element={<Settings />} />
+      </Routes>
+    </>
   );
 }
 
