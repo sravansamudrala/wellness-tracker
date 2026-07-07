@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 const defaultRoutine = {
   faceWash: false,
   vitaminC: false,
@@ -35,7 +36,7 @@ function Skincare() {
     Number(routine.cleanser) + Number(routine.eveningMoisturizer);
 
   return (
-    <div>
+    <div className="skincare-container">
       <h2>🧴 Skincare</h2>
 
       <div className="progress-card">
@@ -55,6 +56,7 @@ function Skincare() {
           <p>🎉 Amazing! Today's skincare routine is complete!</p>
         )}
       </div>
+
       <h3>Morning Routine</h3>
 
       <ul>
