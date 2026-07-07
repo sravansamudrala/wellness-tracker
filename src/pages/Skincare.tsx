@@ -1,26 +1,104 @@
+import { useState } from "react";
+
+const defaultRoutine = {
+  faceWash: false,
+  vitaminC: false,
+  moisturizer: false,
+  sunscreen: false,
+  cleanser: false,
+  eveningMoisturizer: false,
+};
+
 function Skincare() {
+   const [routine, setRoutine] = useState(() => {
+  const savedRoutine = localStorage.getItem("skincareRoutine");
+
+  if (savedRoutine) {
+    return JSON.parse(savedRoutine);
+  }
+
+  return defaultRoutine;
+});
+
+  const completedCount = Object.values(routine).filter(Boolean).length;
+  const totalCount = Object.keys(routine).length;
+  const progress = Math.round((completedCount / totalCount) * 100);
+ localStorage.setItem("skincareRoutine", JSON.stringify(routine));
   return (
     <div>
       <h2>🧴 Skincare</h2>
 
       <h3>Today's Progress</h3>
 
-      <p>0%</p>
-
+<p>{progress}%</p>
       <h3>Morning Routine</h3>
 
       <ul>
-        <li>☐ Face Wash</li>
-        <li>☐ Vitamin C</li>
-        <li>☐ Moisturizer</li>
-        <li>☐ Sunscreen</li>
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              checked={routine.faceWash}
+              onChange={(e) => setRoutine({ ...routine, faceWash: e.target.checked })}
+            />
+            Face Wash
+          </label>
+        </li>
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              checked={routine.vitaminC}
+              onChange={(e) => setRoutine({ ...routine, vitaminC: e.target.checked })}
+            />
+            Vitamin C
+          </label>
+        </li>
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              checked={routine.moisturizer}
+              onChange={(e) => setRoutine({ ...routine, moisturizer: e.target.checked })}
+            />
+            Moisturizer
+          </label>
+        </li>
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              checked={routine.sunscreen}
+              onChange={(e) => setRoutine({ ...routine, sunscreen: e.target.checked })}
+            />
+            Sunscreen
+          </label>
+        </li>
       </ul>
 
       <h3>Evening Routine</h3>
 
       <ul>
-        <li>☐ Cleanser</li>
-        <li>☐ Moisturizer</li>
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              checked={routine.cleanser}
+              onChange={(e) => setRoutine({ ...routine, cleanser: e.target.checked })}
+            />
+            Cleanser
+          </label>
+        </li>
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              checked={routine.eveningMoisturizer}
+              onChange={(e) => setRoutine({ ...routine, eveningMoisturizer: e.target.checked })}
+            />
+            Moisturizer
+          </label>
+        </li>
       </ul>
     </div>
   );
