@@ -139,3 +139,23 @@ ul {
 li {
   margin: 10px 0;
 }
+
+.skincare-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f5f7fa;
+}
+
+.progress-card {
+  background: white;
+  padding: 20px;
+  border-radius: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
