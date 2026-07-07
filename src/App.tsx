@@ -1,4 +1,5 @@
 import Header from "./components/Header";
+import BottomNavigation from "./components/BottomNavigation";
 import { Routes, Route } from "react-router-dom";
 
 import Dashboard from "./pages/Dashboard";
@@ -23,6 +24,7 @@ function App() {
         <Route path="/history" element={<History />} />
         <Route path="/settings" element={<Settings />} />
       </Routes>
+      <BottomNavigation />
     </>
   );
 }
