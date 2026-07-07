@@ -38,20 +38,23 @@ function Skincare() {
     <div>
       <h2>🧴 Skincare</h2>
 
-      <h3>Today's Progress</h3>
+      <div className="progress-card">
+        <h3>Today's Progress</h3>
 
-      <div>
-        <progress value={progress} max="100"></progress>
-        <p>{progress}%</p>
+        <div>
+          <progress value={progress} max="100"></progress>
+          <p>{progress}%</p>
+        </div>
+        {progress === 0 && <p>💪 Let's start today's routine!</p>}
+
+        {progress > 0 && progress < 100 && (
+          <p>👍 Great progress! Keep going.</p>
+        )}
+
+        {progress === 100 && (
+          <p>🎉 Amazing! Today's skincare routine is complete!</p>
+        )}
       </div>
-      {progress === 0 && <p>💪 Let's start today's routine!</p>}
-
-      {progress > 0 && progress < 100 && <p>👍 Great progress! Keep going.</p>}
-
-      {progress === 100 && (
-        <p>🎉 Amazing! Today's skincare routine is complete!</p>
-      )}
-
       <h3>Morning Routine</h3>
 
       <ul>
