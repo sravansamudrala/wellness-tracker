@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { getToday, updateToday } from "../services/skincareApi";
 
 const defaultRoutine = {
   faceWash: false,
@@ -10,22 +11,32 @@ const defaultRoutine = {
 };
 
 function Skincare() {
-  const [routine, setRoutine] = useState(() => {
-    const savedRoutine = localStorage.getItem("skincareRoutine");
+  const [routine, setRoutine] = useState(defaultRoutine);
+  useEffect(() => {
+    async function loadRoutine() {
+      console.log("Loading skincare from API...");
 
-    if (savedRoutine) {
-      return JSON.parse(savedRoutine);
+      const data = await getToday();
+
+      console.log(data);
+
+      setRoutine({
+        faceWash: data.face_wash,
+        vitaminC: data.vitamin_c,
+        moisturizer: data.moisturizer,
+        sunscreen: data.sunscreen,
+        cleanser: data.cleanser,
+        eveningMoisturizer: data.evening_moisturizer,
+      });
     }
 
-    return defaultRoutine;
-  });
+    loadRoutine();
+  }, []);
 
   const completedCount = Object.values(routine).filter(Boolean).length;
   const totalCount = Object.keys(routine).length;
   const progress = Math.round((completedCount / totalCount) * 100);
-  useEffect(() => {
-    localStorage.setItem("skincareRoutine", JSON.stringify(routine));
-  }, [routine]);
+
   const morningCompleted =
     Number(routine.faceWash) +
     Number(routine.vitaminC) +
@@ -34,6 +45,18 @@ function Skincare() {
 
   const eveningCompleted =
     Number(routine.cleanser) + Number(routine.eveningMoisturizer);
+
+  const saveRoutine = async (updatedRoutine: typeof defaultRoutine) => {
+    setRoutine(updatedRoutine);
+    await updateToday({
+      face_wash: updatedRoutine.faceWash,
+      vitamin_c: updatedRoutine.vitaminC,
+      moisturizer: updatedRoutine.moisturizer,
+      sunscreen: updatedRoutine.sunscreen,
+      cleanser: updatedRoutine.cleanser,
+      evening_moisturizer: updatedRoutine.eveningMoisturizer,
+    });
+  };
 
   return (
     <div className="skincare-container">
@@ -66,7 +89,7 @@ function Skincare() {
               type="checkbox"
               checked={routine.faceWash}
               onChange={(e) =>
-                setRoutine({ ...routine, faceWash: e.target.checked })
+                saveRoutine({ ...routine, faceWash: e.target.checked })
               }
             />
             Face Wash
@@ -78,7 +101,7 @@ function Skincare() {
               type="checkbox"
               checked={routine.vitaminC}
               onChange={(e) =>
-                setRoutine({ ...routine, vitaminC: e.target.checked })
+                saveRoutine({ ...routine, vitaminC: e.target.checked })
               }
             />
             Vitamin C
@@ -90,7 +113,7 @@ function Skincare() {
               type="checkbox"
               checked={routine.moisturizer}
               onChange={(e) =>
-                setRoutine({ ...routine, moisturizer: e.target.checked })
+                saveRoutine({ ...routine, moisturizer: e.target.checked })
               }
             />
             Moisturizer
@@ -102,7 +125,7 @@ function Skincare() {
               type="checkbox"
               checked={routine.sunscreen}
               onChange={(e) =>
-                setRoutine({ ...routine, sunscreen: e.target.checked })
+                saveRoutine({ ...routine, sunscreen: e.target.checked })
               }
             />
             Sunscreen
@@ -120,7 +143,7 @@ function Skincare() {
               type="checkbox"
               checked={routine.cleanser}
               onChange={(e) =>
-                setRoutine({ ...routine, cleanser: e.target.checked })
+                saveRoutine({ ...routine, cleanser: e.target.checked })
               }
             />
             Cleanser
@@ -132,7 +155,10 @@ function Skincare() {
               type="checkbox"
               checked={routine.eveningMoisturizer}
               onChange={(e) =>
-                setRoutine({ ...routine, eveningMoisturizer: e.target.checked })
+                saveRoutine({
+                  ...routine,
+                  eveningMoisturizer: e.target.checked,
+                })
               }
             />
             Moisturizer
