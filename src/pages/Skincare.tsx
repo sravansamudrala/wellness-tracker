@@ -6,6 +6,7 @@ const defaultRoutine = {
   vitaminC: false,
   moisturizer: false,
   sunscreen: false,
+  lipcare: false,
   cleanser: false,
   eveningMoisturizer: false,
 };
@@ -25,6 +26,7 @@ function Skincare() {
         vitaminC: data.vitamin_c,
         moisturizer: data.moisturizer,
         sunscreen: data.sunscreen,
+        lipcare: data.lipcare,
         cleanser: data.cleanser,
         eveningMoisturizer: data.evening_moisturizer,
       });
@@ -41,7 +43,8 @@ function Skincare() {
     Number(routine.faceWash) +
     Number(routine.vitaminC) +
     Number(routine.moisturizer) +
-    Number(routine.sunscreen);
+    Number(routine.sunscreen) +
+    Number(routine.lipcare);
 
   const eveningCompleted =
     Number(routine.cleanser) + Number(routine.eveningMoisturizer);
@@ -53,6 +56,7 @@ function Skincare() {
       vitamin_c: updatedRoutine.vitaminC,
       moisturizer: updatedRoutine.moisturizer,
       sunscreen: updatedRoutine.sunscreen,
+      lipcare: updatedRoutine.lipcare,
       cleanser: updatedRoutine.cleanser,
       evening_moisturizer: updatedRoutine.eveningMoisturizer,
     });
@@ -131,7 +135,19 @@ function Skincare() {
             Sunscreen
           </label>
         </li>
-        <p>{morningCompleted} / 4 Completed</p>
+        <li>
+          <label>
+            <input
+              type="checkbox"
+              checked={routine.lipcare}
+              onChange={(e) =>
+                saveRoutine({ ...routine, lipcare: e.target.checked })
+              }
+            />
+            Lip Care
+          </label>
+        </li>
+        <p>{morningCompleted} / 5 Completed</p>
       </ul>
 
       <h3>Evening Routine</h3>

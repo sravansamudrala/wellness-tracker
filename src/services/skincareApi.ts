@@ -5,6 +5,7 @@ export interface SkincareData {
   vitamin_c: boolean;
   moisturizer: boolean;
   sunscreen: boolean;
+  lipcare: boolean;
   cleanser: boolean;
   evening_moisturizer: boolean;
 }
