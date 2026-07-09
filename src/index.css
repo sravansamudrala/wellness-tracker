@@ -131,6 +131,30 @@ code {
   background: var(--code-bg);
 }
 
+.status-msg {
+  text-align: center;
+  color: var(--text);
+  font-size: 15px;
+  padding: 20px 0;
+}
+
+.status-error {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 16px;
+  text-align: center;
+  color: var(--text-h);
+  font-size: 15px;
+}
+
+.status-error button {
+  width: auto;
+  margin-top: 12px;
+  padding: 10px 20px;
+}
+
 .progress-card {
   background: var(--card-bg);
   padding: 20px;
