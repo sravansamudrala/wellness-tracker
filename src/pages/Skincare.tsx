@@ -1,5 +1,7 @@
 import { useState, useEffect } from "react";
 import { getToday, updateToday } from "../services/skincareApi";
+import { getStats } from "../services/skincareStatsApi";
+import type { SkincareStats } from "../services/skincareStatsApi";
 
 const defaultRoutine = {
   faceWash: false,
@@ -13,6 +15,7 @@ const defaultRoutine = {
 
 function Skincare() {
   const [routine, setRoutine] = useState(defaultRoutine);
+  const [stats, setStats] = useState<SkincareStats | null>(null);
   useEffect(() => {
     async function loadRoutine() {
       console.log("Loading skincare from API...");
@@ -33,6 +36,15 @@ function Skincare() {
     }
 
     loadRoutine();
+  }, []);
+
+  useEffect(() => {
+    async function loadStats() {
+      const data = await getStats();
+      setStats(data);
+    }
+
+    loadStats();
   }, []);
 
   const completedCount = Object.values(routine).filter(Boolean).length;
@@ -65,6 +77,28 @@ function Skincare() {
   return (
     <div className="skincare-container">
       <h2>🧴 Skincare</h2>
+
+      {stats && (
+        <div className="progress-card">
+          <h3>📊 Your Skincare Stats</h3>
+
+          <p>
+            🔥 Current Streak: <strong>{stats.current_streak} days</strong>
+          </p>
+
+          <p>
+            🏆 Best Streak: <strong>{stats.best_streak} days</strong>
+          </p>
+
+          <p>
+            📈 Average Completion: <strong>{stats.average_completion}%</strong>
+          </p>
+
+          <p>
+            📅 Total Days Tracked: <strong>{stats.total_days}</strong>
+          </p>
+        </div>
+      )}
 
       <div className="progress-card">
         <h3>Today's Progress</h3>
