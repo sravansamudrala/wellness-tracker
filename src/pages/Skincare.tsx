@@ -129,6 +129,8 @@ function Skincare() {
             <div className="progress-card">
               <h3>📊 Your Skincare Stats</h3>
 
+              <p>{stats.message}</p>
+
               <p>
                 🔥 Current Streak: <strong>{stats.current_streak} days</strong>
               </p>
