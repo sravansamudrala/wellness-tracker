@@ -5,6 +5,7 @@ export interface SkincareStats {
   best_streak: number;
   total_days: number;
   average_completion: number;
+  message: string;
 }
 
 export const getStats = async (): Promise<SkincareStats> => {
