@@ -5,15 +5,37 @@ import type { SkincareHistoryItem } from "../services/skincareHistoryApi";
 function History() {
   const [history, setHistory] = useState<SkincareHistoryItem[]>([]);
   const [expandedDate, setExpandedDate] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+  const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
+    let cancelled = false;
+
     async function loadHistory() {
-      const data = await getHistory();
-      setHistory(data);
+      try {
+        const data = await getHistory();
+        if (cancelled) return;
+        setHistory(data);
+        setError(false);
+      } catch {
+        if (!cancelled) setError(true);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
     }
 
     loadHistory();
-  }, []);
+    return () => {
+      cancelled = true;
+    };
+  }, [reloadKey]);
+
+  const retryLoad = () => {
+    setLoading(true);
+    setError(false);
+    setReloadKey((k) => k + 1);
+  };
 
   function getStatusEmoji(progress: number) {
     if (progress === 100) return "🟢";
@@ -35,7 +57,24 @@ function History() {
     <div className="history-container">
       <h2>📅 Skincare History</h2>
 
-      {history.map((item, index) => (
+      {loading && (
+        <p className="status-msg">Loading… (the server may be waking up)</p>
+      )}
+
+      {!loading && error && (
+        <div className="status-error">
+          <p>Couldn't load your history.</p>
+          <button onClick={retryLoad}>Retry</button>
+        </div>
+      )}
+
+      {!loading && !error && history.length === 0 && (
+        <p className="status-msg">No skincare history yet.</p>
+      )}
+
+      {!loading &&
+        !error &&
+        history.map((item, index) => (
         <div
           key={item.date}
           className="history-card"
