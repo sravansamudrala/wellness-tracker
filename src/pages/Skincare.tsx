@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { SkeletonCard } from "../components/Skeleton";
 import { getToday, updateToday } from "../services/skincareApi";
 import { getStats } from "../services/skincareStatsApi";
 import type { SkincareStats } from "../services/skincareStatsApi";
@@ -113,7 +114,10 @@ function Skincare() {
       <h2>🧴 Skincare</h2>
 
       {loading && (
-        <p className="status-msg">Loading… (the server may be waking up)</p>
+        <>
+          <SkeletonCard lines={4} />
+          <SkeletonCard lines={5} />
+        </>
       )}
 
       {!loading && error && (
