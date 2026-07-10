@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { getToday } from "../services/skincareApi";
+import { getActive, getCurrentSession } from "../services/gymApi";
 
 const SKINCARE_HABITS = [
   "face_wash",
@@ -14,6 +15,7 @@ const SKINCARE_HABITS = [
 
 function Dashboard() {
   const [skincareProgress, setSkincareProgress] = useState<number | null>(null);
+  const [gymSummary, setGymSummary] = useState<string | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -38,6 +40,35 @@ function Dashboard() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadGym() {
+      try {
+        const [active, current] = await Promise.all([
+          getActive(),
+          getCurrentSession(),
+        ]);
+        if (cancelled) return;
+
+        if (current) {
+          setGymSummary(`In progress — ${current.name}`);
+        } else if (active.next_day) {
+          setGymSummary(`Next: ${active.next_day.name}`);
+        } else {
+          setGymSummary("No active plan");
+        }
+      } catch {
+        // Leave gym summary unknown if the request fails.
+      }
+    }
+
+    loadGym();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="skincare-container">
       <h2>🏠 Dashboard</h2>
@@ -49,6 +80,9 @@ function Dashboard() {
         {skincareProgress === null
           ? "Loading…"
           : `${skincareProgress}% Complete`}
+      </Link>
+      <Link to="/gym">
+        🏋️ Gym: {gymSummary === null ? "Loading…" : gymSummary}
       </Link>
       <Link to="/food">🥗 Food: Not Started</Link>
       <Link to="/water">💧 Water: 0 L</Link>
