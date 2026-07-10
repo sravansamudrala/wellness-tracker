@@ -268,6 +268,153 @@ ul > p {
   padding: 20px 20px 100px;
 }
 
+/* ----- Dashboard (modular tiles) ----- */
+
+.dash-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 16px 110px;
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.dash-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-height: 104px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+  color: var(--text-h);
+  text-decoration: none;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.dash-card:active {
+  transform: scale(0.985);
+}
+
+.dash-card:hover {
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+}
+
+.dash-card-wide {
+  grid-column: 1 / -1;
+}
+
+.dash-card-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dash-card-icon {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.dash-card-name {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--text);
+}
+
+.dash-card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-h);
+}
+
+.dash-muted {
+  color: var(--text);
+  font-weight: 500;
+}
+
+/* Shimmer skeleton loaders */
+.dash-skeleton-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-skeleton {
+  display: block;
+  height: 14px;
+  width: 100%;
+  border-radius: 7px;
+  background: linear-gradient(
+    90deg,
+    rgba(128, 128, 128, 0.12) 25%,
+    rgba(128, 128, 128, 0.24) 37%,
+    rgba(128, 128, 128, 0.12) 63%
+  );
+  background-size: 400% 100%;
+  animation: dash-shimmer 1.4s ease infinite;
+}
+
+.dash-skeleton-short {
+  width: 55%;
+}
+
+@keyframes dash-shimmer {
+  0% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+/* Generic shimmer skeletons (used by page loading states) */
+.skeleton {
+  display: block;
+  border-radius: 8px;
+  background: linear-gradient(
+    90deg,
+    rgba(128, 128, 128, 0.12) 25%,
+    rgba(128, 128, 128, 0.24) 37%,
+    rgba(128, 128, 128, 0.12) 63%
+  );
+  background-size: 400% 100%;
+  animation: dash-shimmer 1.4s ease infinite;
+}
+
+.skeleton-line {
+  height: 14px;
+  width: 100%;
+}
+
+.skeleton-short {
+  width: 55%;
+}
+
+.skeleton-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
 /* ----- Gym module ----- */
 
 .gym-container {

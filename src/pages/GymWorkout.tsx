@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { SkeletonCard } from "../components/Skeleton";
 import {
   abandonSession,
   completeSession,
@@ -190,7 +191,10 @@ function GymWorkout() {
       <h2>🏋️ {sessionName || "Workout"}</h2>
 
       {loading && (
-        <p className="status-msg">Loading… (the server may be waking up)</p>
+        <>
+          <SkeletonCard lines={4} />
+          <SkeletonCard lines={4} />
+        </>
       )}
 
       {!loading && error && (
