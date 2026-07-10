@@ -5,7 +5,7 @@ function BottomNavigation() {
   return (
     <nav>
       <NavLink to="/">🏠</NavLink>
-      <NavLink to="/food">🍽</NavLink>
+      <NavLink to="/gym">🏋️</NavLink>
       <NavLink to="/skincare">🧴</NavLink>
       <NavLink to="/weight">⚖</NavLink>
       <NavLink to="/water">💧</NavLink>
