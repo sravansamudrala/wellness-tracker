@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { SkeletonCard } from "../components/Skeleton";
 import {
   abandonSession,
   completeSession,
@@ -190,7 +191,10 @@ function GymWorkout() {
       <h2>🏋️ {sessionName || "Workout"}</h2>
 
       {loading && (
-        <p className="status-msg">Loading… (the server may be waking up)</p>
+        <>
+          <SkeletonCard lines={4} />
+          <SkeletonCard lines={4} />
+        </>
       )}
 
       {!loading && error && (
@@ -224,7 +228,10 @@ function GymWorkout() {
               </div>
 
               {ex.sets.map((s, i) => (
-                <div key={s.key} className="gym-set-row">
+                <div
+                  key={s.key}
+                  className={`gym-set-row${s.isCompleted ? " is-done" : ""}`}
+                >
                   <span className="gym-set-num">{i + 1}</span>
                   <input
                     type="number"
@@ -278,13 +285,21 @@ function GymWorkout() {
             </p>
           )}
 
-          <button onClick={saveProgress} disabled={saving || completing}>
-            {saving ? "Saving…" : "💾 Save Progress"}
+          <button
+            className="gym-btn-success"
+            onClick={completeWorkout}
+            disabled={completing}
+          >
+            {completing ? "Finishing…" : "✅ Complete Workout"}
           </button>
           <br />
           <br />
-          <button onClick={completeWorkout} disabled={completing}>
-            {completing ? "Finishing…" : "✅ Complete Workout"}
+          <button
+            className="gym-btn-secondary"
+            onClick={saveProgress}
+            disabled={saving || completing}
+          >
+            {saving ? "Saving…" : "💾 Save Progress"}
           </button>
           <br />
           <br />
