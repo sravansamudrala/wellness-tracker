@@ -10,6 +10,10 @@ export default defineConfig({
         enabled: true,
       },
       registerType: "autoUpdate",
+      // Pull our push / notificationclick handlers into the generated SW.
+      workbox: {
+        importScripts: ["push-sw.js"],
+      },
       manifest: {
         name: "AI Wellness Tracker",
         short_name: "Wellness",

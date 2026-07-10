@@ -4,6 +4,7 @@ import {
   updateReminderSettings,
 } from "../services/reminderSettingsApi";
 import { showTestNotification } from "../utils/notifications";
+import { subscribeToPush } from "../services/pushApi";
 
 function Settings() {
   const [morningTime, setMorningTime] = useState("08:00");
@@ -13,6 +14,7 @@ function Settings() {
   const [error, setError] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState(false);
+  const [pushError, setPushError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
 
   useEffect(() => {
@@ -45,6 +47,32 @@ function Settings() {
     setError(false);
     setReloadKey((k) => k + 1);
   };
+
+  // Turning the toggle on must register a push subscription first (needs the
+  // permission prompt, which iOS only allows from a user gesture like this).
+  async function handleNotificationsToggle(checked: boolean) {
+    setPushError(null);
+
+    if (!checked) {
+      setNotificationsEnabled(false);
+      return;
+    }
+
+    try {
+      const subscribed = await subscribeToPush();
+      if (subscribed) {
+        setNotificationsEnabled(true);
+      } else {
+        setNotificationsEnabled(false);
+        setPushError("Notification permission was denied.");
+      }
+    } catch (e) {
+      setNotificationsEnabled(false);
+      setPushError(
+        e instanceof Error ? e.message : "Couldn't enable notifications."
+      );
+    }
+  }
 
   async function saveSettings() {
     setSaving(true);
@@ -112,10 +140,12 @@ function Settings() {
         <input
           type="checkbox"
           checked={notificationsEnabled}
-          onChange={(e) => setNotificationsEnabled(e.target.checked)}
+          onChange={(e) => handleNotificationsToggle(e.target.checked)}
         />
         Enable Notifications
       </label>
+
+      {pushError && <p className="status-error">{pushError}</p>}
 
       <br />
       <br />
