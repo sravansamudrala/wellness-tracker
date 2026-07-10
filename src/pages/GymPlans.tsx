@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { SkeletonCard } from "../components/Skeleton";
 import { getActive, getPlans } from "../services/gymApi";
 import type { WorkoutPlan } from "../services/gymApi";
 
@@ -51,7 +52,11 @@ function GymPlans() {
       </Link>
 
       {loading && (
-        <p className="status-msg">Loading… (the server may be waking up)</p>
+        <>
+          <SkeletonCard lines={1} />
+          <SkeletonCard lines={1} />
+          <SkeletonCard lines={1} />
+        </>
       )}
 
       {!loading && error && (
