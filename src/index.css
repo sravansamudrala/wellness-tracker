@@ -273,18 +273,37 @@ ul > p {
 .gym-container {
   max-width: 500px;
   margin: 0 auto;
-  padding: 20px 20px 100px;
+  padding: 20px 16px 110px;
 }
 
+.gym-container h3 {
+  margin: 22px 4px 12px;
+}
+
+.gym-container .progress-card {
+  text-align: left;
+  padding: 18px;
+}
+
+.gym-container .progress-card h3 {
+  margin: 0 0 12px;
+}
+
+/* Next-workout preview list */
 .gym-preview {
-  margin-top: 10px;
+  margin-top: 12px;
   text-align: left;
 }
 
 .gym-preview-item {
   font-size: 14px;
   color: var(--text);
-  padding: 3px 0;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.gym-preview-item:last-child {
+  border-bottom: none;
 }
 
 /* Navigation links + tappable cards */
@@ -292,19 +311,21 @@ ul > p {
 .gym-card-link {
   display: block;
   background: var(--card-bg);
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
   box-shadow: var(--shadow);
-  padding: 14px 16px;
+  padding: 15px 16px;
   margin-bottom: 12px;
   font-size: 15px;
+  font-weight: 500;
   color: var(--text-h);
   text-decoration: none;
-  transition: box-shadow 0.2s ease, transform 0.1s ease;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
 }
 
 .gym-nav-link:active,
 .gym-card-link:active {
-  transform: scale(0.98);
+  transform: scale(0.985);
 }
 
 .gym-card-title {
@@ -323,54 +344,69 @@ ul > p {
 
 .gym-badge {
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
-  color: var(--success);
-  background: var(--success-bg);
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  background: var(--accent-bg);
   border-radius: 999px;
-  padding: 2px 8px;
+  padding: 3px 9px;
 }
 
 /* Exercise / set logger */
 .gym-exercise-card {
   background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: var(--shadow);
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 16px 16px 14px;
+  margin-bottom: 14px;
 }
 
 .gym-exercise-card h3 {
-  margin-bottom: 12px;
+  margin: 0 0 14px;
   text-transform: none;
   letter-spacing: 0;
-  font-size: 16px;
+  font-size: 17px;
+  font-weight: 600;
   color: var(--text-h);
 }
 
 .gym-set-head,
 .gym-set-row {
   display: grid;
-  grid-template-columns: 32px 1fr 1fr 40px 32px;
-  gap: 8px;
+  grid-template-columns: 28px 1fr 1fr 44px 28px;
+  gap: 10px;
   align-items: center;
 }
 
 .gym-set-head {
-  font-size: 12px;
+  font-size: 11px;
   text-transform: uppercase;
-  letter-spacing: 0.4px;
+  letter-spacing: 0.5px;
   color: var(--text);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
+  padding: 0 2px;
+}
+
+.gym-set-head span:nth-child(4) {
+  text-align: center;
 }
 
 .gym-set-row {
-  margin-bottom: 8px;
+  margin-bottom: 10px;
+  padding: 4px;
+  border-radius: 10px;
+  transition: background 0.2s ease;
+}
+
+.gym-set-row.is-done {
+  background: var(--success-bg);
 }
 
 .gym-set-num {
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--text);
   text-align: center;
 }
@@ -378,54 +414,85 @@ ul > p {
 .gym-set-row input[type="number"] {
   width: 100%;
   box-sizing: border-box;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
   background: var(--bg);
   color: var(--text-h);
-  font-size: 15px;
+  font-size: 16px; /* 16px prevents iOS zoom-on-focus */
+  text-align: center;
+}
+
+.gym-set-row input[type="number"]:focus {
+  outline: none;
+  border-color: var(--accent);
 }
 
 .gym-set-row input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--accent);
+  width: 22px;
+  height: 22px;
+  accent-color: var(--success);
   justify-self: center;
 }
 
 /* Button variants (override the global full-width accent button) */
+.gym-btn-secondary {
+  background: transparent;
+  color: var(--accent);
+  border: 1.5px solid var(--accent-border);
+}
+
+.gym-btn-success {
+  background: var(--success);
+  color: #fff;
+}
+
 .gym-ghost-btn {
-  margin-top: 8px;
+  margin-top: 6px;
   background: var(--accent-bg);
   color: var(--accent);
+  font-size: 14px;
+  padding: 10px;
 }
 
 .gym-remove-btn {
-  width: 32px;
+  width: 28px;
   padding: 6px 0;
   background: transparent;
   color: var(--text);
-  font-size: 14px;
+  font-size: 15px;
+  justify-self: center;
 }
 
 .gym-danger-btn {
   background: transparent;
   color: #ef4444;
   border: 1px solid var(--border);
+  font-weight: 500;
 }
 
 /* Day picker (start a specific plan day) */
 .gym-day-btn {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
   background: var(--card-bg);
   color: var(--text-h);
+  border: 1px solid var(--border);
   box-shadow: var(--shadow);
   margin-bottom: 10px;
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 15px;
   text-align: left;
+}
+
+.gym-day-btn::after {
+  content: "›";
+  margin-left: auto;
+  color: var(--text);
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 400;
 }
 
 .skincare-container > p,
