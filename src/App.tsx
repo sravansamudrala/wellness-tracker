@@ -1,7 +1,9 @@
 import Header from "./components/Header";
 import BottomNavigation from "./components/BottomNavigation";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
+import { useAuth } from "./context/AuthContext";
+import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Food from "./pages/Food";
 import Skincare from "./pages/Skincare";
@@ -18,28 +20,43 @@ import GymSessionDetail from "./pages/GymSessionDetail";
 import GymInsights from "./pages/GymInsights";
 
 function App() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <>
-      <Header />
+      {isAuthenticated && <Header />}
 
       <Routes>
-        <Route path="/" element={<Dashboard />} />
-        {/* Food is retained but no longer in the bottom nav (replaced by Gym). */}
-        <Route path="/food" element={<Food />} />
-        <Route path="/skincare" element={<Skincare />} />
-        <Route path="/weight" element={<Weight />} />
-        <Route path="/water" element={<Water />} />
-        <Route path="/history" element={<History />} />
-        <Route path="/settings" element={<Settings />} />
-        <Route path="/gym" element={<GymHome />} />
-        <Route path="/gym/workout" element={<GymWorkout />} />
-        <Route path="/gym/plans" element={<GymPlans />} />
-        <Route path="/gym/plans/:planId" element={<GymPlanDetail />} />
-        <Route path="/gym/insights" element={<GymInsights />} />
-        <Route path="/gym/history" element={<GymHistory />} />
-        <Route path="/gym/history/:sessionId" element={<GymSessionDetail />} />
+        {/* Public. If already logged in, bounce away from the login screen. */}
+        <Route
+          path="/login"
+          element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
+        />
+
+        {isAuthenticated ? (
+          <>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/food" element={<Food />} />
+            <Route path="/skincare" element={<Skincare />} />
+            <Route path="/weight" element={<Weight />} />
+            <Route path="/water" element={<Water />} />
+            <Route path="/history" element={<History />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/gym" element={<GymHome />} />
+            <Route path="/gym/workout" element={<GymWorkout />} />
+            <Route path="/gym/plans" element={<GymPlans />} />
+            <Route path="/gym/plans/:planId" element={<GymPlanDetail />} />
+            <Route path="/gym/insights" element={<GymInsights />} />
+            <Route path="/gym/history" element={<GymHistory />} />
+            <Route path="/gym/history/:sessionId" element={<GymSessionDetail />} />
+          </>
+        ) : (
+          // Not logged in → any route falls through to the login screen.
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        )}
       </Routes>
-      <BottomNavigation />
+
+      {isAuthenticated && <BottomNavigation />}
     </>
   );
 }
