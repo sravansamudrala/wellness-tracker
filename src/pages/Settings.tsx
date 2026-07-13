@@ -5,6 +5,7 @@ import {
 } from "../services/reminderSettingsApi";
 import { showTestNotification } from "../utils/notifications";
 import { subscribeToPush } from "../services/pushApi";
+import { useAuth } from "../context/AuthContext";
 
 function Settings() {
   const [morningTime, setMorningTime] = useState("08:00");
@@ -16,6 +17,8 @@ function Settings() {
   const [saveError, setSaveError] = useState(false);
   const [pushError, setPushError] = useState<string | null>(null);
   const [reloadKey, setReloadKey] = useState(0);
+
+  const { logout } = useAuth();
 
   useEffect(() => {
     let cancelled = false;
@@ -166,6 +169,13 @@ function Settings() {
           <button onClick={showTestNotification}>🔔 Test Notification</button>
         </>
       )}
+
+      {/* Always available, even if settings failed to load. Logging out clears
+          the token; App then redirects to /login automatically. */}
+      <hr className="settings-divider" />
+      <button className="gym-danger-btn" onClick={logout}>
+        🚪 Log out
+      </button>
     </div>
   );
 }
