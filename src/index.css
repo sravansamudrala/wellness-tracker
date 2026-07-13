@@ -203,17 +203,29 @@ button {
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
+  letter-spacing: 0.2px;
   color: #fff;
   background: var(--accent);
-  transition: opacity 0.2s ease, transform 0.1s ease;
-}
-
-button:hover {
-  opacity: 0.9;
+  /* Subtle depth gradient on accent buttons (falls back to solid if
+     color-mix is unsupported). */
+  background: linear-gradient(
+    135deg,
+    var(--accent),
+    color-mix(in srgb, var(--accent), #000 14%)
+  );
+  box-shadow: 0 6px 16px var(--accent-bg);
+  transition: transform 0.12s ease, box-shadow 0.2s ease, opacity 0.2s ease;
 }
 
 button:active {
   transform: scale(0.98);
+}
+
+@media (hover: hover) {
+  button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px var(--accent-bg);
+  }
 }
 
 ul {
@@ -642,6 +654,102 @@ ul > p {
   font-weight: 400;
 }
 
+/* Insights */
+.gym-range-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.gym-range-tab {
+  flex: 1;
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.gym-range-tab.is-active {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: var(--accent-border);
+}
+
+.gym-volume-total {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin-bottom: 12px;
+}
+
+.gym-bars {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.gym-bar-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.gym-bar-label {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.gym-bar-track {
+  height: 10px;
+  border-radius: 999px;
+  background: var(--accent-bg);
+  overflow: hidden;
+}
+
+.gym-bar-fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--accent);
+  transition: width 0.3s ease;
+}
+
+.gym-bar-value {
+  font-size: 12px;
+  color: var(--text);
+  min-width: 48px;
+  text-align: right;
+}
+
+.gym-stat-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.gym-stat-row:last-child {
+  border-bottom: none;
+}
+
+.gym-stat-name {
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.gym-stat-value {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  text-align: right;
+}
+
 .skincare-container > p,
 .skincare-container > a {
   display: flex;
@@ -664,4 +772,69 @@ ul > p {
 
 .skincare-container > a:active {
   transform: scale(0.98);
+}
+
+/* ----- Polish + responsive ----- */
+
+/* Non-accent buttons shouldn't inherit the accent gradient/glow. */
+.gym-btn-secondary,
+.gym-danger-btn,
+.gym-ghost-btn,
+.gym-remove-btn,
+.gym-range-tab {
+  box-shadow: none;
+}
+
+.gym-btn-success {
+  box-shadow: 0 6px 16px var(--success-bg);
+}
+
+/* Lift interactive cards on hover-capable devices (desktop/tablet). */
+@media (hover: hover) {
+  .gym-nav-link:hover,
+  .gym-card-link:hover,
+  .gym-day-btn:hover,
+  .dash-card:hover,
+  .skincare-container > a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  }
+}
+
+/* Widen the layout and use more columns on larger screens. */
+@media (min-width: 640px) {
+  .gym-container,
+  .dash-container,
+  .skincare-container {
+    max-width: 680px;
+  }
+
+  .dash-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (min-width: 900px) {
+  .gym-container,
+  .dash-container,
+  .skincare-container {
+    max-width: 760px;
+  }
+}
+
+/* Respect reduced-motion preferences. */
+@media (prefers-reduced-motion: reduce) {
+  button,
+  .gym-nav-link,
+  .gym-card-link,
+  .gym-day-btn,
+  .dash-card,
+  .skincare-container > a,
+  .gym-bar-fill {
+    transition: none;
+  }
+  .skeleton,
+  .dash-skeleton {
+    animation: none;
+  }
 }

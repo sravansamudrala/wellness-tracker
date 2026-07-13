@@ -15,6 +15,7 @@ import GymPlans from "./pages/GymPlans";
 import GymPlanDetail from "./pages/GymPlanDetail";
 import GymHistory from "./pages/GymHistory";
 import GymSessionDetail from "./pages/GymSessionDetail";
+import GymInsights from "./pages/GymInsights";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function App() {
         <Route path="/gym/workout" element={<GymWorkout />} />
         <Route path="/gym/plans" element={<GymPlans />} />
         <Route path="/gym/plans/:planId" element={<GymPlanDetail />} />
+        <Route path="/gym/insights" element={<GymInsights />} />
         <Route path="/gym/history" element={<GymHistory />} />
         <Route path="/gym/history/:sessionId" element={<GymSessionDetail />} />
       </Routes>
