@@ -136,11 +136,18 @@ function Skincare() {
               <p>{stats.message}</p>
 
               <p>
-                🔥 Current Streak: <strong>{stats.current_streak} days</strong>
+                🔥 Current Streak:{" "}
+                <strong>
+                  {stats.current_streak}{" "}
+                  {stats.current_streak === 1 ? "day" : "days"}
+                </strong>
               </p>
 
               <p>
-                🏆 Best Streak: <strong>{stats.best_streak} days</strong>
+                🏆 Best Streak:{" "}
+                <strong>
+                  {stats.best_streak} {stats.best_streak === 1 ? "day" : "days"}
+                </strong>
               </p>
 
               <p>
