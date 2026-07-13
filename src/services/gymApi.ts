@@ -92,6 +92,32 @@ export interface GymStats {
   message: string;
 }
 
+export interface VolumePoint {
+  date: string;
+  volume_kg: number;
+}
+
+export interface VolumeResponse {
+  range: string;
+  total_volume_kg: number;
+  points: VolumePoint[];
+}
+
+export interface RecordItem {
+  exercise_id: string;
+  exercise_name: string;
+  max_weight_kg: number | null;
+  estimated_1rm_kg: number | null;
+  max_volume_kg: number | null;
+}
+
+export interface RecoveryItem {
+  muscle_group_id: string;
+  muscle_group_name: string;
+  last_trained: string | null;
+  days_since: number | null;
+}
+
 // ----- Request payloads -----
 
 export interface StartSessionBody {
@@ -124,6 +150,25 @@ export const getActive = async (): Promise<ActiveWorkout> => {
 
 export const getStats = async (): Promise<GymStats> => {
   const response = await api.get<GymStats>("/api/v1/gym/insights/stats");
+  return response.data;
+};
+
+export const getVolume = async (range = "all"): Promise<VolumeResponse> => {
+  const response = await api.get<VolumeResponse>(
+    `/api/v1/gym/insights/volume?range=${range}`
+  );
+  return response.data;
+};
+
+export const getRecords = async (): Promise<RecordItem[]> => {
+  const response = await api.get<RecordItem[]>("/api/v1/gym/insights/records");
+  return response.data;
+};
+
+export const getRecovery = async (): Promise<RecoveryItem[]> => {
+  const response = await api.get<RecoveryItem[]>(
+    "/api/v1/gym/insights/recovery"
+  );
   return response.data;
 };
 

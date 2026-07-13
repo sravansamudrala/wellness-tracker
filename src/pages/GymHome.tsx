@@ -124,7 +124,11 @@ function GymHome() {
               <h3>📊 Your Progress</h3>
               <p>{stats.message}</p>
               <p>
-                🔥 Current Streak: <strong>{stats.current_streak} days</strong>
+                🔥 Current Streak:{" "}
+                <strong>
+                  {stats.current_streak}{" "}
+                  {stats.current_streak === 1 ? "day" : "days"}
+                </strong>
               </p>
               <p>
                 📅 This Week: <strong>{stats.this_week}</strong> workout
@@ -208,6 +212,9 @@ function GymHome() {
 
           <Link to="/gym/plans" className="gym-nav-link">
             📋 Workout Plans
+          </Link>
+          <Link to="/gym/insights" className="gym-nav-link">
+            📊 Insights
           </Link>
           <Link to="/gym/history" className="gym-nav-link">
             📜 Workout History

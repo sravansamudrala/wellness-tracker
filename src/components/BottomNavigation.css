@@ -1,39 +1,82 @@
-nav {
+.bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
+  z-index: 20;
   max-width: 500px;
   margin: 0 auto;
 
   display: flex;
   justify-content: space-around;
-  align-items: center;
+  align-items: stretch;
+  gap: 2px;
 
-  padding: 10px 12px;
+  /* Clear the iOS home indicator with the safe-area inset. */
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom, 0px));
 
-  background: var(--card-bg, white);
-  border-top: 1px solid var(--border, #ddd);
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.06);
+  /* Frosted-glass bar (falls back to solid card bg if unsupported). */
+  background: var(--card-bg);
+  background: color-mix(in srgb, var(--card-bg) 80%, transparent);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  border-top: 1px solid var(--border);
+  box-shadow: 0 -6px 24px rgba(0, 0, 0, 0.1);
 }
 
-nav a {
-  text-decoration: none;
-  font-size: 22px;
+.bottom-nav-tab {
+  flex: 1;
+  min-width: 0;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 999px;
-  transition: background 0.2s ease, transform 0.15s ease;
+  gap: 3px;
+  padding: 7px 2px;
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--text);
+  transition: color 0.2s ease, background 0.2s ease, transform 0.12s ease;
 }
 
-nav a:hover {
-  background: var(--accent-bg, rgba(170, 59, 255, 0.1));
+.bottom-nav-icon {
+  font-size: 20px;
+  line-height: 1;
+  transition: transform 0.2s ease;
 }
 
-nav a.active {
-  background: var(--accent-bg, rgba(170, 59, 255, 0.1));
-  transform: scale(1.08);
+.bottom-nav-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.2px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.bottom-nav-tab:active {
+  transform: scale(0.92);
+}
+
+.bottom-nav-tab.active {
+  color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.bottom-nav-tab.active .bottom-nav-icon {
+  transform: translateY(-1px) scale(1.1);
+}
+
+@media (hover: hover) {
+  .bottom-nav-tab:hover {
+    background: var(--accent-bg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-nav-tab,
+  .bottom-nav-icon {
+    transition: none;
+  }
 }
