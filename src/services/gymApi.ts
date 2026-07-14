@@ -15,6 +15,11 @@ export interface Exercise {
   is_custom: boolean;
 }
 
+export interface MuscleGroup {
+  id: string;
+  name: string;
+}
+
 export interface PlanExercise {
   id: string;
   order_index: number;
@@ -145,6 +150,40 @@ export interface LogSetsBody {
 
 export const getActive = async (): Promise<ActiveWorkout> => {
   const response = await api.get<ActiveWorkout>("/api/v1/gym/active");
+  return response.data;
+};
+
+// ----- Catalog (for the freestyle "Log Workout" screen) -----
+
+export const getExercises = async (): Promise<Exercise[]> => {
+  const response = await api.get<Exercise[]>("/api/v1/gym/exercises");
+  return response.data;
+};
+
+export const getMuscleGroups = async (): Promise<MuscleGroup[]> => {
+  const response = await api.get<MuscleGroup[]>("/api/v1/gym/muscle-groups");
+  return response.data;
+};
+
+export const createExercise = async (
+  name: string,
+  muscle_group_id: string | null
+): Promise<Exercise> => {
+  const response = await api.post<Exercise>("/api/v1/gym/exercises", {
+    name,
+    muscle_group_id,
+  });
+  return response.data;
+};
+
+export const quickLog = async (
+  exercise_ids: string[],
+  name?: string
+): Promise<WorkoutSessionDetail> => {
+  const response = await api.post<WorkoutSessionDetail>(
+    "/api/v1/gym/sessions/quick-log",
+    { exercise_ids, name }
+  );
   return response.data;
 };
 
