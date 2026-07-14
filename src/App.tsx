@@ -12,6 +12,7 @@ import Water from "./pages/Water";
 import History from "./pages/History";
 import Settings from "./pages/Settings";
 import GymHome from "./pages/GymHome";
+import GymLog from "./pages/GymLog";
 import GymWorkout from "./pages/GymWorkout";
 import GymPlans from "./pages/GymPlans";
 import GymPlanDetail from "./pages/GymPlanDetail";
@@ -43,6 +44,7 @@ function App() {
             <Route path="/history" element={<History />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/gym" element={<GymHome />} />
+            <Route path="/gym/log" element={<GymLog />} />
             <Route path="/gym/workout" element={<GymWorkout />} />
             <Route path="/gym/plans" element={<GymPlans />} />
             <Route path="/gym/plans/:planId" element={<GymPlanDetail />} />
