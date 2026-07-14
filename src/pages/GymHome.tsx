@@ -210,6 +210,9 @@ function GymHome() {
             </div>
           )}
 
+          <Link to="/gym/log" className="gym-nav-link">
+            ＋ Log Workout
+          </Link>
           <Link to="/gym/plans" className="gym-nav-link">
             📋 Workout Plans
           </Link>
