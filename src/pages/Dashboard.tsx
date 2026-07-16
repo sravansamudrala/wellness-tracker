@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import DashboardCard from "../components/DashboardCard";
 import { getToday } from "../services/skincareApi";
 import { getActive, getCurrentSession } from "../services/gymApi";
+import { getWaterToday, getWaterSettings } from "../services/waterApi";
 
 const SKINCARE_HABITS = [
   "face_wash",
@@ -18,6 +19,9 @@ function Dashboard() {
   const [skincareLoading, setSkincareLoading] = useState(true);
   const [gymSummary, setGymSummary] = useState<string | null>(null);
   const [gymLoading, setGymLoading] = useState(true);
+  const [waterLiters, setWaterLiters] = useState<number | null>(null);
+  const [waterGoalLiters, setWaterGoalLiters] = useState<number | null>(null);
+  const [waterLoading, setWaterLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -74,6 +78,32 @@ function Dashboard() {
     };
   }, []);
 
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadWater() {
+      try {
+        const [today, settings] = await Promise.all([
+          getWaterToday(),
+          getWaterSettings(),
+        ]);
+        if (cancelled) return;
+
+        setWaterLiters(today.amount_ml / 1000);
+        setWaterGoalLiters(settings.daily_goal_ml / 1000);
+      } catch {
+        // Leave water totals unknown if the request fails.
+      } finally {
+        if (!cancelled) setWaterLoading(false);
+      }
+    }
+
+    loadWater();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   return (
     <div className="dash-container">
       <h2>🏠 Dashboard</h2>
@@ -98,8 +128,10 @@ function Dashboard() {
           <p className="dash-value dash-muted">Coming soon</p>
         </DashboardCard>
 
-        <DashboardCard to="/water" icon="💧" title="Water">
-          <p className="dash-value dash-muted">0 L</p>
+        <DashboardCard to="/water" icon="💧" title="Water" loading={waterLoading}>
+          <p className="dash-value">
+            {(waterLiters ?? 0).toFixed(1)}L / {(waterGoalLiters ?? 2).toFixed(1)}L
+          </p>
         </DashboardCard>
 
         <DashboardCard to="/weight" icon="⚖️" title="Weight">
