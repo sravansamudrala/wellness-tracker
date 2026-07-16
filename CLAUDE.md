@@ -24,17 +24,36 @@ The app calls the FastAPI backend through a single axios instance in [src/servic
 - `.env.local` → `http://127.0.0.1:8000` (local backend)
 - `.env.production` → `https://wellness-backend-i1hv.onrender.com` (Render)
 
-Both env files also set `VITE_VAPID_PUBLIC_KEY` (the Web Push public key — not secret; used by `pushApi.ts`). `api.ts` has a 60s timeout + one-shot retry on cold-start-shaped failures (Render free tier spins down; see PWA & Push below).
+Both env files also set `VITE_VAPID_PUBLIC_KEY` (the Web Push public key — not secret; used by `pushApi.ts`). `api.ts` has a 60s timeout + one-shot retry on cold-start-shaped failures (Render free tier spins down; see PWA & Push below). It also has a **request interceptor** that attaches `Authorization: Bearer <token>` (from `localStorage`, key `TOKEN_KEY = "wt_token"`), and the response interceptor **redirects to `/login` on a 401** (token missing/expired) — except on the `/api/v1/auth/*` endpoints. See **Authentication** below.
 
 Per-feature service modules (`skincareApi.ts`, `skincareHistoryApi.ts`, `skincareStatsApi.ts`, `reminderSettingsApi.ts`, `pushApi.ts`) wrap the endpoints and export the request/response **TypeScript interfaces**. These interfaces use the backend's **`snake_case`** field names (`face_wash`, `morning_time`, …). Components hold state in **`camelCase`** and map to/from snake_case at the API boundary (see `Skincare.tsx`). Keep the two spellings in sync when adding fields, and mirror the backend's route prefixes (`/api/v1/skincare`, `/api/v1/settings/reminders`).
 
 ## Architecture
 
 - **Bootstrap:** `index.html` → [src/main.tsx](src/main.tsx) wraps `<App />` in `<BrowserRouter>` inside `<StrictMode>`.
-- **Routing:** [src/App.tsx](src/App.tsx) renders a persistent `<Header />` and `<BottomNavigation />` around a `<Routes>` block. Seven routes: `/` (Dashboard), `/food`, `/skincare`, `/weight`, `/water`, `/history`, `/settings`. Adding a page = create it in `src/pages/`, add a `<Route>` here, and add a `<NavLink>` in [src/components/BottomNavigation.tsx](src/components/BottomNavigation.tsx).
+- **Routing:** [src/App.tsx](src/App.tsx) is **auth-gated** via `useAuth()`: `<Header />` and `<BottomNavigation />` only render when logged in; unauthenticated users are redirected to `/login` (public). When authed, the app routes render: `/` (Dashboard), `/skincare`, `/weight`, `/water`, `/history`, `/settings`, the **gym** routes (`/gym`, `/gym/log`, `/gym/workout`, `/gym/plans`, `/gym/plans/:planId`, `/gym/insights`, `/gym/history`, `/gym/history/:sessionId`), and `/food` (kept but removed from the nav — the **🏋️ Gym** tab replaced the Food tab in [BottomNavigation.tsx](src/components/BottomNavigation.tsx)). Adding a page = create it in `src/pages/`, add a `<Route>` in the authed block, and (if it needs a tab) a `<NavLink>` in `BottomNavigation.tsx`.
 - **Layers:** `pages/` = route screens (own their data fetching via `useEffect` + service calls and local `useState`); `services/` = axios API wrappers + types; `components/` = shared/presentational (e.g. `skincare/RoutineItem`, `RoutineSection`, `ProgressBar`); `utils/` = misc (e.g. `notifications.ts`, a browser-`Notification` test trigger).
 - **SPA on Vercel:** [vercel.json](vercel.json) rewrites all paths to `/index.html` so client-side routes deep-link correctly.
 - **Static assets:** `public/` files (`favicon.svg`, `icons.svg`) are served from root (`/favicon.svg`); `src/assets/` files are imported and bundler-hashed.
+
+## Authentication (login-gated app)
+
+Email/password auth against the backend's custom-JWT endpoints. The whole app sits behind a login screen.
+
+- **[src/context/AuthContext.tsx](src/context/AuthContext.tsx):** `AuthProvider` (wraps `<App/>` in [main.tsx](src/main.tsx)) holds the `token` (initialized from `localStorage`), exposes `login`/`register`/`logout`/`isAuthenticated` via the `useAuth()` hook. Token persists to `localStorage` (`TOKEN_KEY` from `api.ts`).
+- **[src/services/authApi.ts](src/services/authApi.ts):** `register`, `login`, `getMe` → `/api/v1/auth/*`.
+- **[src/pages/Login.tsx](src/pages/Login.tsx):** login/register toggle form; shows the backend's error `detail` (e.g. "Incorrect email or password").
+- **Token flow:** `api.ts` request interceptor attaches the Bearer token to every call; a 401 clears it and bounces to `/login` (see Backend connection). **Log out** is a button in [Settings.tsx](src/pages/Settings.tsx) (`useAuth().logout()`).
+- Route guarding is in `App.tsx` (see Routing) — not per-component.
+
+## Gym module (frontend)
+
+Screens under `/gym` (services + types in [src/services/gymApi.ts](src/services/gymApi.ts), all `snake_case` matching the backend):
+
+- **GymHome** (`/gym`): active plan + next-workout (queue) with Start/Resume, quick stats, and nav links (**＋ Log Workout**, Plans, Insights, History).
+- **GymLog** (`/gym/log`): the **freestyle "Log Workout"** checklist — exercises grouped into collapsible **sections** (Back, Chest, Cardio first) via `getExercises`+`getMuscleGroups` grouped by `primary_muscle_group_id`; tick what you did, **＋ add exercise** per section (`createExercise`), **Save** (`quickLog`). Same-day saves merge server-side; headings auto-name from muscle groups.
+- **GymWorkout** (`/gym/workout`): the plan-driven set logger (reps/kg). **GymPlans/GymPlanDetail** (view/activate plans). **GymInsights** (`/gym/insights`: volume/PRs/recovery, CSS bar chart). **GymHistory/GymSessionDetail** (past sessions).
+- All follow the loading/error/`reloadKey` pattern; reuse the global card/checkbox/`.gym-*`/`.dash-*` CSS in [src/index.css](src/index.css). Reusable bits: [components/DashboardCard.tsx](src/components/DashboardCard.tsx), [components/Skeleton.tsx](src/components/Skeleton.tsx) (`SkeletonCard`).
 
 ## PWA & Push notifications
 
@@ -50,7 +69,8 @@ Installable PWA via `vite-plugin-pwa` (`registerType: "autoUpdate"`). Two SW-rel
 Only some screens are real; treat the rest as stubs when planning work:
 
 - **Fully wired to the backend:** `Skincare.tsx` (loads/saves today's routine; persists on every checkbox toggle; shows stats + streak `message` via `skincareStatsApi.ts`), `Settings.tsx` (reminder times + notifications toggle — enabling it registers a Web Push subscription, see below), `History.tsx` (per-day completion cards), and `Dashboard.tsx` (fetches today's entry via `getToday` and shows real % — previously read a never-written localStorage key).
-- **Stubs — return a bare heading:** `Food.tsx`, `Water.tsx`, `Weight.tsx`.
+- **Also fully wired:** the **Gym** module (`/gym*` — see Gym module section) and **auth** (`/login`). `Dashboard.tsx` is now a modular card grid (incl. a Gym summary tile).
+- **Stubs — return a bare heading:** `Water.tsx`, `Weight.tsx`. (`Food.tsx` is also a stub and no longer in the nav — the 🏋️ Gym tab replaced it; the `/food` route still exists.)
 - All backend-fetching pages use a loading/error/retry pattern (retry via a `reloadKey` that re-runs the fetch effect) — added for graceful cold-start handling.
 
 ## Notes
