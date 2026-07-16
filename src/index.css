@@ -946,6 +946,154 @@ ul > p {
   color: var(--text-h);
 }
 
+.water-hero-card {
+  text-align: center;
+  padding: 24px 16px 20px;
+}
+
+.water-hero {
+  position: relative;
+  width: 180px;
+  height: 180px;
+  margin: 0 auto 16px;
+}
+
+.water-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.water-ring-track,
+.water-ring-fill {
+  fill: none;
+  stroke-width: 10;
+}
+
+.water-ring-track {
+  stroke: var(--accent-bg);
+}
+
+.water-ring-fill {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease;
+}
+
+.water-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.water-amount {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--text-h);
+  letter-spacing: -0.4px;
+}
+
+.water-unit {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.water-goal-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.water-goal-text {
+  font-size: 14px;
+  color: var(--text);
+}
+
+.water-edit-btn {
+  width: auto;
+  padding: 4px 8px;
+  background: none;
+  box-shadow: none;
+  font-size: 14px;
+}
+
+.water-goal-edit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.water-goal-edit input {
+  flex: 1;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 16px; /* avoids iOS zoom-on-focus */
+}
+
+.water-goal-edit input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.water-goal-edit button {
+  width: auto;
+  padding: 10px 14px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.water-goal-cancel {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  box-shadow: none;
+}
+
+.water-message {
+  margin-top: 14px;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.water-stats-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: center;
+}
+
+.water-stat {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.water-stat-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text-h);
+}
+
+.water-stat-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text);
+}
+
 .water-quick-add {
   display: flex;
   gap: 10px;
@@ -956,6 +1104,9 @@ ul > p {
   flex: 1;
   padding: 12px 0;
   font-size: 14px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  box-shadow: none;
 }
 
 /* ----- Polish + responsive ----- */
