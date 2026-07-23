@@ -7,6 +7,7 @@ export interface Exercise {
   name: string;
   category: string | null;
   primary_muscle_group_id: string | null;
+  primary_muscle_group_name: string | null;
   equipment_id: string | null;
   difficulty: string | null;
   instructions: string | null;
@@ -18,6 +19,7 @@ export interface Exercise {
 export interface MuscleGroup {
   id: string;
   name: string;
+  image_url: string | null;
 }
 
 export interface PlanExercise {

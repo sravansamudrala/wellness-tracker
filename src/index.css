@@ -528,6 +528,14 @@ ul > p {
   display: none;
 }
 
+.gym-log-section-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
 .gym-log-section > summary::before {
   content: "▸";
   color: var(--text);

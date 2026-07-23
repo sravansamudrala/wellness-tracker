@@ -156,6 +156,16 @@ function GymLog() {
               className="gym-log-section"
             >
               <summary>
+                {section.mg.image_url && (
+                  <img
+                    src={section.mg.image_url}
+                    alt=""
+                    className="gym-log-section-icon"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                )}
                 {section.mg.name}
                 <span className="gym-log-count">
                   {section.items.filter((e) => selected.has(e.id)).length ||

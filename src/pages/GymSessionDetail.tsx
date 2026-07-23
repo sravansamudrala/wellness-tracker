@@ -75,7 +75,14 @@ function GymSessionDetail() {
 
           {session.exercises.map((se) => (
             <div key={se.id} className="gym-exercise-card">
-              <h3>{se.exercise.name}</h3>
+              <h3>
+                {se.exercise.name}{" "}
+                {se.exercise.primary_muscle_group_name && (
+                  <span className="gym-badge">
+                    {se.exercise.primary_muscle_group_name}
+                  </span>
+                )}
+              </h3>
               {se.sets.length === 0 ? (
                 <p className="gym-preview-item">No sets logged.</p>
               ) : (
