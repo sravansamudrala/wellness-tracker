@@ -157,14 +157,21 @@ function GymLog() {
             >
               <summary>
                 {section.mg.image_url && (
-                  <img
-                    src={section.mg.image_url}
-                    alt=""
-                    className="gym-log-section-icon"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+                  <a
+                    href={section.mg.image_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    <img
+                      src={section.mg.image_url}
+                      alt={`${section.mg.name} — open full image`}
+                      className="gym-log-section-icon"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </a>
                 )}
                 {section.mg.name}
                 <span className="gym-log-count">
