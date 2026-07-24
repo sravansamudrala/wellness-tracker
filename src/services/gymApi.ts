@@ -8,7 +8,6 @@ export interface Exercise {
   category: string | null;
   primary_muscle_group_id: string | null;
   primary_muscle_group_name: string | null;
-  equipment_id: string | null;
   difficulty: string | null;
   instructions: string | null;
   image_url: string | null;
@@ -20,34 +19,6 @@ export interface MuscleGroup {
   id: string;
   name: string;
   image_url: string | null;
-}
-
-export interface PlanExercise {
-  id: string;
-  order_index: number;
-  target_sets: number | null;
-  target_reps: string | null;
-  target_rest_seconds: number | null;
-  exercise: Exercise;
-}
-
-export interface PlanDay {
-  id: string;
-  name: string;
-  order_index: number;
-  exercises: PlanExercise[];
-}
-
-export interface WorkoutPlan {
-  id: string;
-  name: string;
-  description: string | null;
-  goal: string | null;
-  is_custom: boolean;
-}
-
-export interface WorkoutPlanDetail extends WorkoutPlan {
-  days: PlanDay[];
 }
 
 export interface SessionSet {
@@ -70,8 +41,6 @@ export interface SessionExercise {
 
 export interface WorkoutSession {
   id: string;
-  plan_day_id: string | null;
-  plan_id: string | null;
   name: string;
   status: string;
   started_at: string;
@@ -83,10 +52,14 @@ export interface WorkoutSessionDetail extends WorkoutSession {
   exercises: SessionExercise[];
 }
 
-export interface ActiveWorkout {
-  active_plan: WorkoutPlan | null;
-  next_day: PlanDay | null;
+export interface GymState {
+  id: string;
   unit: string;
+  rotation_order: string[];
+}
+
+export interface NextCategory {
+  muscle_group: MuscleGroup | null;
 }
 
 export interface GymStats {
@@ -125,35 +98,7 @@ export interface RecoveryItem {
   days_since: number | null;
 }
 
-// ----- Request payloads -----
-
-export interface StartSessionBody {
-  plan_day_id?: string;
-  name?: string;
-}
-
-export interface SetInput {
-  set_number: number;
-  reps?: number | null;
-  weight_kg?: number | null;
-  is_warmup?: boolean;
-  is_completed?: boolean;
-  rest_seconds?: number | null;
-}
-
-export interface LogSetsBody {
-  exercises: {
-    session_exercise_id: string;
-    sets: SetInput[];
-  }[];
-}
-
 // ----- Endpoints (all under /api/v1/gym) -----
-
-export const getActive = async (): Promise<ActiveWorkout> => {
-  const response = await api.get<ActiveWorkout>("/api/v1/gym/active");
-  return response.data;
-};
 
 // ----- Catalog (for the freestyle "Log Workout" screen) -----
 
@@ -178,6 +123,46 @@ export const createExercise = async (
   return response.data;
 };
 
+export const updateExercise = async (
+  exerciseId: string,
+  name: string
+): Promise<Exercise> => {
+  const response = await api.put<Exercise>(
+    `/api/v1/gym/exercises/${exerciseId}`,
+    { name }
+  );
+  return response.data;
+};
+
+export const deleteExercise = async (exerciseId: string): Promise<void> => {
+  await api.delete(`/api/v1/gym/exercises/${exerciseId}`);
+};
+
+// ----- State (unit preference + rotation order) -----
+
+export const getState = async (): Promise<GymState> => {
+  const response = await api.get<GymState>("/api/v1/gym/state");
+  return response.data;
+};
+
+export const updateState = async (
+  unit: string,
+  rotation_order: string[]
+): Promise<GymState> => {
+  const response = await api.put<GymState>("/api/v1/gym/state", {
+    unit,
+    rotation_order,
+  });
+  return response.data;
+};
+
+export const getNextCategory = async (): Promise<NextCategory> => {
+  const response = await api.get<NextCategory>("/api/v1/gym/log/next-category");
+  return response.data;
+};
+
+// ----- Sessions -----
+
 export const quickLog = async (
   exercise_ids: string[],
   name?: string
@@ -188,6 +173,22 @@ export const quickLog = async (
   );
   return response.data;
 };
+
+export const getHistory = async (): Promise<WorkoutSession[]> => {
+  const response = await api.get<WorkoutSession[]>("/api/v1/gym/sessions");
+  return response.data;
+};
+
+export const getSession = async (
+  sessionId: string
+): Promise<WorkoutSessionDetail> => {
+  const response = await api.get<WorkoutSessionDetail>(
+    `/api/v1/gym/sessions/${sessionId}`
+  );
+  return response.data;
+};
+
+// ----- Insights -----
 
 export const getStats = async (): Promise<GymStats> => {
   const response = await api.get<GymStats>("/api/v1/gym/insights/stats");
@@ -209,81 +210,6 @@ export const getRecords = async (): Promise<RecordItem[]> => {
 export const getRecovery = async (): Promise<RecoveryItem[]> => {
   const response = await api.get<RecoveryItem[]>(
     "/api/v1/gym/insights/recovery"
-  );
-  return response.data;
-};
-
-export const getPlans = async (): Promise<WorkoutPlan[]> => {
-  const response = await api.get<WorkoutPlan[]>("/api/v1/gym/plans");
-  return response.data;
-};
-
-export const getPlan = async (planId: string): Promise<WorkoutPlanDetail> => {
-  const response = await api.get<WorkoutPlanDetail>(`/api/v1/gym/plans/${planId}`);
-  return response.data;
-};
-
-export const activatePlan = async (planId: string) => {
-  const response = await api.post(`/api/v1/gym/plans/${planId}/activate`);
-  return response.data;
-};
-
-export const getCurrentSession = async (): Promise<WorkoutSessionDetail | null> => {
-  const response = await api.get<WorkoutSessionDetail | null>(
-    "/api/v1/gym/sessions/current"
-  );
-  return response.data;
-};
-
-export const startSession = async (
-  body: StartSessionBody = {}
-): Promise<WorkoutSessionDetail> => {
-  const response = await api.post<WorkoutSessionDetail>(
-    "/api/v1/gym/sessions/start",
-    body
-  );
-  return response.data;
-};
-
-export const logSets = async (
-  sessionId: string,
-  body: LogSetsBody
-): Promise<WorkoutSessionDetail> => {
-  const response = await api.put<WorkoutSessionDetail>(
-    `/api/v1/gym/sessions/${sessionId}/sets`,
-    body
-  );
-  return response.data;
-};
-
-export const completeSession = async (
-  sessionId: string
-): Promise<WorkoutSessionDetail> => {
-  const response = await api.post<WorkoutSessionDetail>(
-    `/api/v1/gym/sessions/${sessionId}/complete`
-  );
-  return response.data;
-};
-
-export const abandonSession = async (
-  sessionId: string
-): Promise<WorkoutSessionDetail> => {
-  const response = await api.post<WorkoutSessionDetail>(
-    `/api/v1/gym/sessions/${sessionId}/abandon`
-  );
-  return response.data;
-};
-
-export const getHistory = async (): Promise<WorkoutSession[]> => {
-  const response = await api.get<WorkoutSession[]>("/api/v1/gym/sessions");
-  return response.data;
-};
-
-export const getSession = async (
-  sessionId: string
-): Promise<WorkoutSessionDetail> => {
-  const response = await api.get<WorkoutSessionDetail>(
-    `/api/v1/gym/sessions/${sessionId}`
   );
   return response.data;
 };

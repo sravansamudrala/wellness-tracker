@@ -561,6 +561,54 @@ ul > p {
   border-radius: 999px;
 }
 
+.gym-log-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.gym-log-item label {
+  flex: 1;
+  min-width: 0;
+}
+
+.gym-icon-btn {
+  width: auto;
+  flex-shrink: 0;
+  padding: 6px 8px;
+  background: transparent;
+  box-shadow: none;
+  font-size: 18px;
+  color: var(--text);
+}
+
+.gym-icon-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+
+.gym-edit-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  padding: 10px 16px;
+}
+
+.gym-edit-row input {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.gym-edit-row .gym-ghost-btn {
+  width: auto;
+  white-space: nowrap;
+}
+
 .gym-add-row {
   display: flex;
   gap: 8px;

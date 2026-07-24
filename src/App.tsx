@@ -13,9 +13,6 @@ import History from "./pages/History";
 import Settings from "./pages/Settings";
 import GymHome from "./pages/GymHome";
 import GymLog from "./pages/GymLog";
-import GymWorkout from "./pages/GymWorkout";
-import GymPlans from "./pages/GymPlans";
-import GymPlanDetail from "./pages/GymPlanDetail";
 import GymHistory from "./pages/GymHistory";
 import GymSessionDetail from "./pages/GymSessionDetail";
 import GymInsights from "./pages/GymInsights";
@@ -45,9 +42,6 @@ function App() {
             <Route path="/settings" element={<Settings />} />
             <Route path="/gym" element={<GymHome />} />
             <Route path="/gym/log" element={<GymLog />} />
-            <Route path="/gym/workout" element={<GymWorkout />} />
-            <Route path="/gym/plans" element={<GymPlans />} />
-            <Route path="/gym/plans/:planId" element={<GymPlanDetail />} />
             <Route path="/gym/insights" element={<GymInsights />} />
             <Route path="/gym/history" element={<GymHistory />} />
             <Route path="/gym/history/:sessionId" element={<GymSessionDetail />} />
