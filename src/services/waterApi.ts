@@ -14,11 +14,17 @@ export interface AddWaterRequest {
 
 export interface WaterSettingsUpdateRequest {
   daily_goal_ml: number;
+  reminders_enabled: boolean;
+  reminder_start_time: string;
+  reminder_end_time: string;
 }
 
 export interface WaterSettings {
   id: string;
   daily_goal_ml: number;
+  reminders_enabled: boolean;
+  reminder_start_time: string;
+  reminder_end_time: string;
   created_at: string;
   updated_at: string;
 }

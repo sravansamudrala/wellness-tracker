@@ -1102,6 +1102,76 @@ ul > p {
   color: var(--text);
 }
 
+.water-header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.water-header-row h2 {
+  margin: 0;
+}
+
+.water-icon-btn {
+  position: absolute;
+  right: 0;
+  width: auto;
+  padding: 6px 8px;
+  background: none;
+  box-shadow: none;
+  border: none;
+  font-size: 18px;
+  line-height: 1;
+}
+
+.water-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.water-modal {
+  width: 100%;
+  max-width: 340px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  color: var(--text-h);
+}
+
+.water-modal h3 {
+  margin-top: 0;
+}
+
+.water-modal-times {
+  display: flex;
+  gap: 16px;
+  margin: 14px 0;
+}
+
+.water-modal-times > div {
+  flex: 1;
+}
+
+.water-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.water-modal-actions button {
+  width: auto;
+  flex: 1;
+}
+
 .water-quick-add {
   display: flex;
   gap: 10px;

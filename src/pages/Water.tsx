@@ -11,6 +11,7 @@ import {
   type WaterSettings,
   type WaterStats,
 } from "../services/waterApi";
+import { subscribeToPush } from "../services/pushApi";
 
 const RING_RADIUS = 54;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
@@ -24,6 +25,13 @@ function Water() {
   const [saving, setSaving] = useState(false);
   const [editingGoal, setEditingGoal] = useState(false);
   const [goalInput, setGoalInput] = useState("");
+  const [remindersEnabled, setRemindersEnabled] = useState(false);
+  const [reminderStartTime, setReminderStartTime] = useState("09:00");
+  const [reminderEndTime, setReminderEndTime] = useState("21:00");
+  const [savingReminders, setSavingReminders] = useState(false);
+  const [reminderSaveError, setReminderSaveError] = useState(false);
+  const [pushError, setPushError] = useState<string | null>(null);
+  const [showReminderSettings, setShowReminderSettings] = useState(false);
 
   const loadWaterData = async () => {
     setLoading(true);
@@ -39,6 +47,9 @@ function Water() {
       setToday(todayData);
       setSettings(settingsData);
       setStats(statsData);
+      setRemindersEnabled(settingsData.reminders_enabled);
+      setReminderStartTime(settingsData.reminder_start_time.substring(0, 5));
+      setReminderEndTime(settingsData.reminder_end_time.substring(0, 5));
     } catch (err) {
       console.error(err);
       setError("Could not load water data.");
@@ -88,6 +99,9 @@ function Water() {
     try {
       const updatedSettings = await updateWaterSettings({
         daily_goal_ml: dailyGoalMl,
+        reminders_enabled: remindersEnabled,
+        reminder_start_time: reminderStartTime,
+        reminder_end_time: reminderEndTime,
       });
       setSettings(updatedSettings);
       setEditingGoal(false);
@@ -96,6 +110,53 @@ function Water() {
       setError("Could not update goal.");
     } finally {
       setSaving(false);
+    }
+  };
+
+  // Turning the toggle on must register a push subscription first (needs the
+  // permission prompt, which iOS only allows from a user gesture like this).
+  async function handleRemindersToggle(checked: boolean) {
+    setPushError(null);
+
+    if (!checked) {
+      setRemindersEnabled(false);
+      return;
+    }
+
+    try {
+      const subscribed = await subscribeToPush();
+      if (subscribed) {
+        setRemindersEnabled(true);
+      } else {
+        setRemindersEnabled(false);
+        setPushError("Notification permission was denied.");
+      }
+    } catch (e) {
+      setRemindersEnabled(false);
+      setPushError(
+        e instanceof Error ? e.message : "Couldn't enable notifications."
+      );
+    }
+  }
+
+  const handleSaveReminders = async () => {
+    setSavingReminders(true);
+    setReminderSaveError(false);
+
+    try {
+      const updatedSettings = await updateWaterSettings({
+        daily_goal_ml: settings?.daily_goal_ml ?? 2000,
+        reminders_enabled: remindersEnabled,
+        reminder_start_time: reminderStartTime,
+        reminder_end_time: reminderEndTime,
+      });
+      setSettings(updatedSettings);
+      setShowReminderSettings(false);
+    } catch (err) {
+      console.error(err);
+      setReminderSaveError(true);
+    } finally {
+      setSavingReminders(false);
     }
   };
 
@@ -110,7 +171,16 @@ function Water() {
 
   return (
     <div className="water-container">
-      <h2>💧 Water</h2>
+      <div className="water-header-row">
+        <h2>💧 Water</h2>
+        <button
+          className="water-icon-btn"
+          onClick={() => setShowReminderSettings(true)}
+          aria-label="Water reminder settings"
+        >
+          ⚙️
+        </button>
+      </div>
 
       {loading && (
         <>
@@ -213,7 +283,74 @@ function Water() {
               +1000ml
             </button>
           </div>
+
         </>
+      )}
+
+      {showReminderSettings && (
+        <div
+          className="water-modal-backdrop"
+          onClick={() => setShowReminderSettings(false)}
+        >
+          <div className="water-modal" onClick={(e) => e.stopPropagation()}>
+            <h3>🔔 Water Reminders</h3>
+
+            <label>
+              <input
+                type="checkbox"
+                checked={remindersEnabled}
+                onChange={(e) => handleRemindersToggle(e.target.checked)}
+              />
+              Remind me hourly
+            </label>
+
+            {pushError && <p className="status-error">{pushError}</p>}
+
+            <div className="water-modal-times">
+              <div>
+                <label>From</label>
+                <br />
+                <input
+                  type="time"
+                  value={reminderStartTime}
+                  onChange={(e) => setReminderStartTime(e.target.value)}
+                />
+              </div>
+
+              <div>
+                <label>Until</label>
+                <br />
+                <input
+                  type="time"
+                  value={reminderEndTime}
+                  onChange={(e) => setReminderEndTime(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <p className="water-message">
+              Reminders pause automatically once you hit your daily goal.
+            </p>
+
+            {reminderSaveError && (
+              <p className="status-error">
+                Couldn't save reminder settings — check your connection and try again.
+              </p>
+            )}
+
+            <div className="water-modal-actions">
+              <button
+                className="water-goal-cancel"
+                onClick={() => setShowReminderSettings(false)}
+              >
+                Close
+              </button>
+              <button disabled={savingReminders} onClick={handleSaveReminders}>
+                {savingReminders ? "Saving…" : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
