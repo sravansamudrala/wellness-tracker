@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import DashboardCard from "../components/DashboardCard";
 import { getToday } from "../services/skincareApi";
-import { getActive, getCurrentSession } from "../services/gymApi";
+import { getNextCategory } from "../services/gymApi";
 import { getWaterToday, getWaterSettings } from "../services/waterApi";
 
 const SKINCARE_HABITS = [
@@ -52,19 +52,10 @@ function Dashboard() {
 
     async function loadGym() {
       try {
-        const [active, current] = await Promise.all([
-          getActive(),
-          getCurrentSession(),
-        ]);
+        const next = await getNextCategory();
         if (cancelled) return;
 
-        if (current) {
-          setGymSummary(`In progress — ${current.name}`);
-        } else if (active.next_day) {
-          setGymSummary(`Next: ${active.next_day.name}`);
-        } else {
-          setGymSummary("No active plan");
-        }
+        setGymSummary(next.muscle_group ? `Next: ${next.muscle_group.name}` : "—");
       } catch {
         // Leave summary unknown if the request fails.
       } finally {

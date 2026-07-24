@@ -3,9 +3,14 @@ import { Link } from "react-router-dom";
 import { SkeletonCard } from "../components/Skeleton";
 import {
   createExercise,
+  deleteExercise,
   getExercises,
   getMuscleGroups,
+  getNextCategory,
+  getState,
   quickLog,
+  updateExercise,
+  updateState,
 } from "../services/gymApi";
 import type { Exercise, MuscleGroup } from "../services/gymApi";
 
@@ -25,15 +30,38 @@ function GymLog() {
   const [saveError, setSaveError] = useState(false);
   const [saved, setSaved] = useState(false);
 
+  // Which muscle group to silently pre-expand (the rotation's "next up").
+  const [nextCategoryId, setNextCategoryId] = useState<string | null>(null);
+
+  // Rotation order editor.
+  const [unit, setUnit] = useState("kg");
+  const [rotationOrder, setRotationOrder] = useState<string[]>([]);
+  const [rotationSaving, setRotationSaving] = useState(false);
+  const [rotationSaved, setRotationSaved] = useState(false);
+
+  // Inline rename / delete, tucked behind a single "⋮" toggle per exercise.
+  const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const [editingExerciseId, setEditingExerciseId] = useState<string | null>(null);
+  const [editingName, setEditingName] = useState("");
+  const [actionError, setActionError] = useState<string | null>(null);
+
   useEffect(() => {
     let cancelled = false;
 
     async function load() {
       try {
-        const [ex, mg] = await Promise.all([getExercises(), getMuscleGroups()]);
+        const [ex, mg, next, state] = await Promise.all([
+          getExercises(),
+          getMuscleGroups(),
+          getNextCategory(),
+          getState(),
+        ]);
         if (cancelled) return;
         setExercises(ex);
         setMuscleGroups(mg);
+        setNextCategoryId(next.muscle_group?.id ?? null);
+        setUnit(state.unit);
+        setRotationOrder(state.rotation_order);
         setError(false);
       } catch {
         if (!cancelled) setError(true);
@@ -72,6 +100,73 @@ function GymLog() {
       setReloadKey((k) => k + 1); // refetch; selections are preserved
     } catch {
       setSaveError(true);
+    }
+  };
+
+  const toggleMenu = (exerciseId: string) => {
+    setMenuOpenId((prev) => (prev === exerciseId ? null : exerciseId));
+  };
+
+  const startEdit = (ex: Exercise) => {
+    setActionError(null);
+    setMenuOpenId(null);
+    setEditingExerciseId(ex.id);
+    setEditingName(ex.name);
+  };
+
+  const cancelEdit = () => {
+    setEditingExerciseId(null);
+    setEditingName("");
+  };
+
+  const saveEdit = async (exerciseId: string) => {
+    const name = editingName.trim();
+    if (!name) return;
+    try {
+      await updateExercise(exerciseId, name);
+      cancelEdit();
+      setReloadKey((k) => k + 1);
+    } catch (err: any) {
+      setActionError(
+        err?.response?.data?.detail ?? "Couldn't rename that exercise."
+      );
+    }
+  };
+
+  const handleDelete = async (ex: Exercise) => {
+    setActionError(null);
+    setMenuOpenId(null);
+    if (!window.confirm(`Delete "${ex.name}"?`)) return;
+    try {
+      await deleteExercise(ex.id);
+      setReloadKey((k) => k + 1);
+    } catch (err: any) {
+      setActionError(
+        err?.response?.data?.detail ?? "Couldn't delete that exercise."
+      );
+    }
+  };
+
+  const moveRotation = (index: number, direction: -1 | 1) => {
+    setRotationOrder((prev) => {
+      const next = [...prev];
+      const target = index + direction;
+      if (target < 0 || target >= next.length) return prev;
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
+    setRotationSaved(false);
+  };
+
+  const saveRotation = async () => {
+    setRotationSaving(true);
+    try {
+      await updateState(unit, rotationOrder);
+      setRotationSaved(true);
+    } catch {
+      setActionError("Couldn't save the rotation order.");
+    } finally {
+      setRotationSaving(false);
     }
   };
 
@@ -149,10 +244,46 @@ function GymLog() {
             Tick what you did, then save. Add your own exercises anytime.
           </p>
 
-          {sections.map((section, i) => (
+          <details className="gym-log-section">
+            <summary>⚙️ Rotation order</summary>
+            <ul>
+              {rotationOrder.map((name, i) => (
+                <li key={name} className="gym-log-item">
+                  <label>{name}</label>
+                  <button
+                    className="gym-icon-btn"
+                    disabled={i === 0}
+                    onClick={() => moveRotation(i, -1)}
+                    aria-label={`Move ${name} up`}
+                  >
+                    ⬆️
+                  </button>
+                  <button
+                    className="gym-icon-btn"
+                    disabled={i === rotationOrder.length - 1}
+                    onClick={() => moveRotation(i, 1)}
+                    aria-label={`Move ${name} down`}
+                  >
+                    ⬇️
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <button
+              className="gym-ghost-btn"
+              onClick={saveRotation}
+              disabled={rotationSaving}
+            >
+              {rotationSaving ? "Saving…" : rotationSaved ? "✅ Saved" : "Save order"}
+            </button>
+          </details>
+
+          {actionError && <p className="status-error">{actionError}</p>}
+
+          {sections.map((section) => (
             <details
               key={section.mg.id}
-              open={i < PRIORITY.length}
+              open={section.mg.id === nextCategoryId}
               className="gym-log-section"
             >
               <summary>
@@ -182,15 +313,72 @@ function GymLog() {
 
               <ul>
                 {section.items.map((ex) => (
-                  <li key={ex.id}>
-                    <label>
-                      <input
-                        type="checkbox"
-                        checked={selected.has(ex.id)}
-                        onChange={() => toggle(ex.id)}
-                      />
-                      {ex.name}
-                    </label>
+                  <li key={ex.id} className="gym-log-item">
+                    {editingExerciseId === ex.id ? (
+                      <div className="gym-edit-row">
+                        <input
+                          type="text"
+                          value={editingName}
+                          onChange={(e) => setEditingName(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter") saveEdit(ex.id);
+                            if (e.key === "Escape") cancelEdit();
+                          }}
+                        />
+                        <button
+                          className="gym-ghost-btn"
+                          onClick={() => saveEdit(ex.id)}
+                        >
+                          Save
+                        </button>
+                        <button className="gym-ghost-btn" onClick={cancelEdit}>
+                          Cancel
+                        </button>
+                      </div>
+                    ) : menuOpenId === ex.id ? (
+                      <>
+                        <label>{ex.name}</label>
+                        <button
+                          className="gym-icon-btn"
+                          onClick={() => startEdit(ex)}
+                          aria-label={`Edit ${ex.name}`}
+                        >
+                          ✏️
+                        </button>
+                        <button
+                          className="gym-icon-btn"
+                          onClick={() => handleDelete(ex)}
+                          aria-label={`Delete ${ex.name}`}
+                        >
+                          🗑️
+                        </button>
+                        <button
+                          className="gym-icon-btn"
+                          onClick={() => toggleMenu(ex.id)}
+                          aria-label="Close menu"
+                        >
+                          ✕
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        <label>
+                          <input
+                            type="checkbox"
+                            checked={selected.has(ex.id)}
+                            onChange={() => toggle(ex.id)}
+                          />
+                          {ex.name}
+                        </label>
+                        <button
+                          className="gym-icon-btn"
+                          onClick={() => toggleMenu(ex.id)}
+                          aria-label={`More options for ${ex.name}`}
+                        >
+                          ⋮
+                        </button>
+                      </>
+                    )}
                   </li>
                 ))}
               </ul>
