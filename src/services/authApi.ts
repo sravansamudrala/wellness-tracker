@@ -36,3 +36,28 @@ export const getMe = async (): Promise<MeResponse> => {
   const res = await api.get<MeResponse>("/api/v1/auth/me");
   return res.data;
 };
+
+export interface MessageResponse {
+  message: string;
+}
+
+export const forgotPassword = async (
+  email: string
+): Promise<MessageResponse> => {
+  const res = await api.post<MessageResponse>(
+    "/api/v1/auth/forgot-password",
+    { email }
+  );
+  return res.data;
+};
+
+export const resetPassword = async (
+  token: string,
+  newPassword: string
+): Promise<MessageResponse> => {
+  const res = await api.post<MessageResponse>("/api/v1/auth/reset-password", {
+    token,
+    new_password: newPassword,
+  });
+  return res.data;
+};
