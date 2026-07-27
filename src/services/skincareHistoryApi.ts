@@ -1,4 +1,5 @@
 import api from "./api";
+import type { SkincareHabitCompletion } from "./skincareApi";
 
 export interface SkincareHistoryItem {
   date: string;
@@ -7,17 +8,12 @@ export interface SkincareHistoryItem {
   total: number;
   progress: number;
 
-  face_wash: boolean;
-  vitamin_c: boolean;
-  moisturizer: boolean;
-  sunscreen: boolean;
-  lipcare: boolean;
-
-  cleanser: boolean;
-  evening_moisturizer: boolean;
+  habits: SkincareHabitCompletion[];
 }
 
-export const getHistory = async () => {
-  const response = await api.get("/api/v1/skincare/history");
+export const getHistory = async (): Promise<SkincareHistoryItem[]> => {
+  const response = await api.get<SkincareHistoryItem[]>(
+    "/api/v1/skincare/history"
+  );
   return response.data;
 };
