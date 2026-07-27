@@ -5,9 +5,8 @@ const TABS: { to: string; icon: string; label: string }[] = [
   { to: "/", icon: "🏠", label: "Home" },
   { to: "/gym", icon: "🏋️", label: "Gym" },
   { to: "/skincare", icon: "🧴", label: "Skin" },
-  { to: "/weight", icon: "⚖️", label: "Weight" },
+  // { to: "/weight", icon: "⚖️", label: "Weight" },
   { to: "/water", icon: "💧", label: "Water" },
-  { to: "/history", icon: "📈", label: "History" },
   { to: "/settings", icon: "⚙️", label: "Settings" },
 ];
 

@@ -9,7 +9,6 @@ import Food from "./pages/Food";
 import Skincare from "./pages/Skincare";
 import Weight from "./pages/Weight";
 import Water from "./pages/Water";
-import History from "./pages/History";
 import Settings from "./pages/Settings";
 import GymHome from "./pages/GymHome";
 import GymLog from "./pages/GymLog";
@@ -38,7 +37,6 @@ function App() {
             <Route path="/skincare" element={<Skincare />} />
             <Route path="/weight" element={<Weight />} />
             <Route path="/water" element={<Water />} />
-            <Route path="/history" element={<History />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/gym" element={<GymHome />} />
             <Route path="/gym/log" element={<GymLog />} />

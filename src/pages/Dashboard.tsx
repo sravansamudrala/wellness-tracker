@@ -4,16 +4,6 @@ import { getToday } from "../services/skincareApi";
 import { getNextCategory } from "../services/gymApi";
 import { getWaterToday, getWaterSettings } from "../services/waterApi";
 
-const SKINCARE_HABITS = [
-  "face_wash",
-  "vitamin_c",
-  "moisturizer",
-  "sunscreen",
-  "lipcare",
-  "cleanser",
-  "evening_moisturizer",
-] as const;
-
 function Dashboard() {
   const [skincareProgress, setSkincareProgress] = useState<number | null>(null);
   const [skincareLoading, setSkincareLoading] = useState(true);
@@ -30,9 +20,11 @@ function Dashboard() {
       try {
         const data = await getToday();
         if (cancelled) return;
-        const completed = SKINCARE_HABITS.filter((habit) => data[habit]).length;
+        const completed = data.habits.filter((h) => h.completed).length;
         setSkincareProgress(
-          Math.round((completed / SKINCARE_HABITS.length) * 100)
+          data.habits.length
+            ? Math.round((completed / data.habits.length) * 100)
+            : 0
         );
       } catch {
         // Leave progress unknown if the request fails.
@@ -55,7 +47,9 @@ function Dashboard() {
         const next = await getNextCategory();
         if (cancelled) return;
 
-        setGymSummary(next.muscle_group ? `Next: ${next.muscle_group.name}` : "—");
+        setGymSummary(
+          next.muscle_group ? `Next: ${next.muscle_group.name}` : "—"
+        );
       } catch {
         // Leave summary unknown if the request fails.
       } finally {
@@ -100,8 +94,26 @@ function Dashboard() {
       <h2>🏠 Dashboard</h2>
 
       <div className="dash-grid">
-        <DashboardCard to="/gym" icon="🏋️" title="Gym" loading={gymLoading} wide>
+        <DashboardCard
+          to="/gym"
+          icon="🏋️"
+          title="Gym"
+          loading={gymLoading}
+          wide
+        >
           <p className="dash-value">{gymSummary ?? "—"}</p>
+        </DashboardCard>
+
+        <DashboardCard
+          to="/water"
+          icon="💧"
+          title="Water"
+          loading={waterLoading}
+        >
+          <p className="dash-value">
+            {(waterLiters ?? 0).toFixed(1)}L /{" "}
+            {(waterGoalLiters ?? 2).toFixed(1)}L
+          </p>
         </DashboardCard>
 
         <DashboardCard
@@ -109,7 +121,6 @@ function Dashboard() {
           icon="🧴"
           title="Skincare"
           loading={skincareLoading}
-          wide
         >
           <progress value={skincareProgress ?? 0} max="100" />
           <p className="dash-value">{skincareProgress ?? 0}% complete</p>
@@ -119,14 +130,8 @@ function Dashboard() {
           <p className="dash-value dash-muted">Coming soon</p>
         </DashboardCard>
 
-        <DashboardCard to="/water" icon="💧" title="Water" loading={waterLoading}>
-          <p className="dash-value">
-            {(waterLiters ?? 0).toFixed(1)}L / {(waterGoalLiters ?? 2).toFixed(1)}L
-          </p>
-        </DashboardCard>
-
         <DashboardCard to="/weight" icon="⚖️" title="Weight">
-          <p className="dash-value dash-muted">—</p>
+          <p className="dash-value dash-muted">Coming soon</p>
         </DashboardCard>
       </div>
     </div>
