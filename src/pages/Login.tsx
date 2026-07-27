@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { AxiosError } from "axios";
 
 import { useAuth } from "../context/AuthContext";
@@ -80,6 +80,14 @@ function Login() {
               : "Sign up"}
           </button>
         </form>
+
+        {mode === "login" && (
+          <p className="auth-toggle">
+            <Link to="/forgot-password" className="auth-link">
+              Forgot password?
+            </Link>
+          </p>
+        )}
 
         <p className="auth-toggle">
           {mode === "login" ? "New here? " : "Already have an account? "}
