@@ -501,6 +501,65 @@ ul > p {
   margin: 28px 0 16px;
 }
 
+/* ----- Settings page ----- */
+
+.settings-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 16px 110px;
+}
+
+.settings-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px 16px;
+  margin-bottom: 16px;
+  color: var(--text-h);
+}
+
+.settings-card h3 {
+  margin: 0 0 12px;
+}
+
+.settings-field {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.settings-field:last-of-type {
+  border-bottom: none;
+}
+
+.settings-field label {
+  font-weight: 500;
+  color: var(--text-h);
+}
+
+.settings-field input[type="time"] {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 10px;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--text-h);
+}
+
+.settings-field input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--accent);
+}
+
+.settings-save-btn {
+  margin-top: 16px;
+}
+
 /* ----- Gym: Log Workout (freestyle category checklist) ----- */
 
 .gym-log-section {
