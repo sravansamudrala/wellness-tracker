@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { AxiosError } from "axios";
 
 import { useAuth } from "../context/AuthContext";
+import PasswordInput from "../components/PasswordInput";
 
 function Login() {
   const navigate = useNavigate();
@@ -60,12 +61,11 @@ function Login() {
             onChange={(e) => setEmail(e.target.value)}
             required
           />
-          <input
-            type="password"
+          <PasswordInput
             placeholder="Password"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setPassword}
             minLength={8}
             required
           />
