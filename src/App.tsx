@@ -1,6 +1,7 @@
 import Header from "./components/Header";
 import BottomNavigation from "./components/BottomNavigation";
 import { Routes, Route, Navigate } from "react-router-dom";
+import { Analytics } from "@vercel/analytics/react";
 
 import { useAuth } from "./context/AuthContext";
 import Login from "./pages/Login";
@@ -55,6 +56,7 @@ function App() {
       </Routes>
 
       {isAuthenticated && <BottomNavigation />}
+      <Analytics />
     </>
   );
 }
