@@ -8,6 +8,10 @@ export interface WaterEntry {
   updated_at: string;
 }
 
+export interface WaterTodayEntry extends WaterEntry {
+  message: string;
+}
+
 export interface AddWaterRequest {
   amount_ml: number;
 }
@@ -37,7 +41,7 @@ export interface WaterStats {
   message: string;
 }
 
-export const getWaterToday = async (): Promise<WaterEntry> => {
+export const getWaterToday = async (): Promise<WaterTodayEntry> => {
   const response = await api.get("/api/v1/water/today");
   return response.data;
 };

@@ -1215,6 +1215,13 @@ ul > p {
   color: var(--text);
 }
 
+.water-hydration-message {
+  margin-top: 12px;
+  font-size: 14px;
+  color: var(--text);
+  text-align: center;
+}
+
 .water-stats-row {
   display: flex;
   justify-content: space-between;

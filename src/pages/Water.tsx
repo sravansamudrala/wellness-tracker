@@ -7,9 +7,9 @@ import {
   getWaterStats,
   getWaterToday,
   updateWaterSettings,
-  type WaterEntry,
   type WaterSettings,
   type WaterStats,
+  type WaterTodayEntry,
 } from "../services/waterApi";
 import { subscribeToPush } from "../services/pushApi";
 
@@ -17,7 +17,7 @@ const RING_RADIUS = 54;
 const RING_CIRCUMFERENCE = 2 * Math.PI * RING_RADIUS;
 
 function Water() {
-  const [today, setToday] = useState<WaterEntry | null>(null);
+  const [today, setToday] = useState<WaterTodayEntry | null>(null);
   const [settings, setSettings] = useState<WaterSettings | null>(null);
   const [stats, setStats] = useState<WaterStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -63,8 +63,11 @@ function Water() {
     setError(null);
 
     try {
-      const updatedToday = await addWater({ amount_ml: amountMl });
-      const updatedStats = await getWaterStats();
+      await addWater({ amount_ml: amountMl });
+      const [updatedToday, updatedStats] = await Promise.all([
+        getWaterToday(),
+        getWaterStats(),
+      ]);
 
       setToday(updatedToday);
       setStats(updatedStats);
@@ -216,6 +219,8 @@ function Water() {
                 <span className="water-unit">of {dailyGoalMl}ml</span>
               </div>
             </div>
+
+            {today && <p className="water-hydration-message">{today.message}</p>}
 
             <div className="water-goal-row">
               {editingGoal ? (
