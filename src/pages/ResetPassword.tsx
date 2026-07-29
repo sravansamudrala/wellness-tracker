@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams, Link } from "react-router-dom";
 import { AxiosError } from "axios";
 
 import * as authApi from "../services/authApi";
+import PasswordInput from "../components/PasswordInput";
 
 function ResetPassword() {
   const navigate = useNavigate();
@@ -46,12 +47,11 @@ function ResetPassword() {
         <h3>Choose a new password</h3>
 
         <form onSubmit={handleSubmit} className="auth-form">
-          <input
-            type="password"
+          <PasswordInput
             placeholder="New password"
             autoComplete="new-password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={setPassword}
             minLength={8}
             required
           />
