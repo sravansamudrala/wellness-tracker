@@ -94,27 +94,23 @@ function ReminderSettingsSection() {
 
   if (loading) {
     return (
-      <div className="settings-card">
-        <p className="status-msg">Loading… (the server may be waking up)</p>
-      </div>
+      <p className="status-msg settings-card-body">
+        Loading… (the server may be waking up)
+      </p>
     );
   }
 
   if (error) {
     return (
-      <div className="settings-card">
-        <div className="status-error">
-          <p>Couldn't load your settings.</p>
-          <button onClick={retryLoad}>Retry</button>
-        </div>
+      <div className="status-error settings-card-body">
+        <p>Couldn't load your settings.</p>
+        <button onClick={retryLoad}>Retry</button>
       </div>
     );
   }
 
   return (
-    <div className="settings-card">
-      <h3>🔔 Skincare Reminders</h3>
-
+    <div className="settings-card-body">
       <div className="settings-field">
         <label htmlFor="morning-reminder">Morning Reminder</label>
         <input

@@ -7,8 +7,12 @@ import * as authApi from "../services/authApi";
 interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string) => Promise<void>;
+  login: (identifier: string, password: string) => Promise<void>;
+  register: (
+    email: string,
+    password: string,
+    username?: string
+  ) => Promise<void>;
   logout: () => void;
 }
 
@@ -30,13 +34,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setToken(value);
   };
 
-  const login = async (email: string, password: string) => {
-    const { access_token } = await authApi.login(email, password);
+  const login = async (identifier: string, password: string) => {
+    const { access_token } = await authApi.login(identifier, password);
     persist(access_token);
   };
 
-  const register = async (email: string, password: string) => {
-    const { access_token } = await authApi.register(email, password);
+  const register = async (
+    email: string,
+    password: string,
+    username?: string
+  ) => {
+    const { access_token } = await authApi.register(
+      email,
+      password,
+      username
+    );
     persist(access_token);
   };
 
