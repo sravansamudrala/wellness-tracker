@@ -548,13 +548,39 @@ ul > p {
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: var(--shadow);
-  padding: 20px 16px;
+  padding: 4px 16px;
   margin-bottom: 16px;
   color: var(--text-h);
 }
 
-.settings-card h3 {
-  margin: 0 0 12px;
+.settings-card > summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 0;
+  cursor: pointer;
+  list-style: none;
+  font-size: 17px;
+  font-weight: 600;
+}
+
+.settings-card > summary::-webkit-details-marker {
+  display: none;
+}
+
+.settings-card > summary::after {
+  content: "▾";
+  margin-left: auto;
+  color: var(--text);
+  transition: transform 0.2s ease;
+}
+
+.settings-card[open] > summary::after {
+  transform: rotate(180deg);
+}
+
+.settings-card-body {
+  padding-bottom: 16px;
 }
 
 .settings-field {
@@ -575,7 +601,9 @@ ul > p {
   color: var(--text-h);
 }
 
-.settings-field input[type="time"] {
+.settings-field input[type="time"],
+.settings-field input[type="text"],
+.settings-field input[type="email"] {
   border: 1px solid var(--border);
   border-radius: 8px;
   padding: 8px 10px;

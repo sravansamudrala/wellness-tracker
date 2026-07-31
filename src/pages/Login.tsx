@@ -10,7 +10,8 @@ function Login() {
   const { login, register } = useAuth();
 
   const [mode, setMode] = useState<"login" | "register">("login");
-  const [email, setEmail] = useState("");
+  const [identifier, setIdentifier] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
@@ -22,9 +23,9 @@ function Login() {
 
     try {
       if (mode === "login") {
-        await login(email, password);
+        await login(identifier, password);
       } else {
-        await register(email, password);
+        await register(identifier, password, username);
       }
       navigate("/");
     } catch (err) {
@@ -54,13 +55,22 @@ function Login() {
 
         <form onSubmit={handleSubmit} className="auth-form">
           <input
-            type="email"
-            placeholder="Email"
+            type={mode === "login" ? "text" : "email"}
+            placeholder={mode === "login" ? "Email or username" : "Email"}
             autoComplete="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
             required
           />
+          {mode === "register" && (
+            <input
+              type="text"
+              placeholder="Username (optional)"
+              autoComplete="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+          )}
           <PasswordInput
             placeholder="Password"
             autoComplete={mode === "login" ? "current-password" : "new-password"}
