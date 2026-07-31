@@ -1607,6 +1607,7 @@ ul > p {
 }
 
 .food-add-row input {
+  box-sizing: border-box;
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -1729,6 +1730,8 @@ ul > p {
 }
 
 .food-review-fields input {
+  box-sizing: border-box;
+  width: 100%;
   padding: 8px 10px;
   border: 1px solid var(--border);
   border-radius: 8px;
