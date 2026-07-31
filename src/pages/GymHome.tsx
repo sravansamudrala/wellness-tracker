@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import DashboardCard from "../components/DashboardCard";
 import { SkeletonCard } from "../components/Skeleton";
 import { getNextCategory, getStats } from "../services/gymApi";
 import type { GymStats, MuscleGroup } from "../services/gymApi";
@@ -64,48 +64,60 @@ function GymHome() {
       {!loading && !error && (
         <>
           {stats && stats.total_workouts > 0 && (
-            <div className="progress-card">
-              <h3>📊 Your Progress</h3>
-              <p>{stats.message}</p>
-              <p>
-                🔥 Current Streak:{" "}
-                <strong>
-                  {stats.current_streak}{" "}
-                  {stats.current_streak === 1 ? "day" : "days"}
-                </strong>
-              </p>
-              <p>
-                📅 This Week: <strong>{stats.this_week}</strong> workout
-                {stats.this_week === 1 ? "" : "s"}
-              </p>
-              <p>
-                🏆 Total Workouts: <strong>{stats.total_workouts}</strong>
-              </p>
+            <div className="dash-grid">
+              <div className="dash-card">
+                <div className="dash-card-head">
+                  <span className="dash-card-icon">🔥</span>
+                  <span className="dash-card-name">Streak</span>
+                </div>
+                <div className="dash-card-body">
+                  <span className="dash-value">
+                    {stats.current_streak}{" "}
+                    {stats.current_streak === 1 ? "day" : "days"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="dash-card">
+                <div className="dash-card-head">
+                  <span className="dash-card-icon">📅</span>
+                  <span className="dash-card-name">This Week</span>
+                </div>
+                <div className="dash-card-body">
+                  <span className="dash-value">
+                    {stats.this_week} workout
+                    {stats.this_week === 1 ? "" : "s"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="dash-card dash-card-wide">
+                <div className="dash-card-head">
+                  <span className="dash-card-icon">🏆</span>
+                  <span className="dash-card-name">Total Workouts</span>
+                </div>
+                <div className="dash-card-body">
+                  <span className="dash-value">{stats.total_workouts}</span>
+                  <span className="dash-muted">{stats.message}</span>
+                </div>
+              </div>
             </div>
           )}
 
           {nextCategory && (
-            <div className="progress-card">
-              <h3>Next up</h3>
-              <p>
-                <strong>{nextCategory.name}</strong>
-              </p>
-              <br />
-              <Link to="/gym/log" className="gym-nav-link">
-                ✅ Log it
-              </Link>
+            <div className="dash-grid">
+              <DashboardCard to="/gym/log" icon="🎯" title="Next Up" wide>
+                <span className="dash-value">{nextCategory.name}</span>
+                <span className="dash-muted">Tap to log it</span>
+              </DashboardCard>
             </div>
           )}
 
-          <Link to="/gym/log" className="gym-nav-link">
-            ＋ Log Workout
-          </Link>
-          <Link to="/gym/insights" className="gym-nav-link">
-            📊 Insights
-          </Link>
-          <Link to="/gym/history" className="gym-nav-link">
-            📜 Workout History
-          </Link>
+          <div className="dash-grid">
+            <DashboardCard to="/gym/log" icon="＋" title="Log Workout" />
+            <DashboardCard to="/gym/insights" icon="📊" title="Insights" />
+            <DashboardCard to="/gym/history" icon="📜" title="History" wide />
+          </div>
         </>
       )}
     </div>
