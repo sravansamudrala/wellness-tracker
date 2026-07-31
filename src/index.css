@@ -583,6 +583,19 @@ ul > p {
   padding-bottom: 16px;
 }
 
+.settings-about-body p {
+  margin-bottom: 10px;
+}
+
+.settings-about-body p:last-child {
+  margin-bottom: 0;
+}
+
+.settings-about-muted {
+  color: var(--text);
+  font-size: 13px;
+}
+
 .settings-field {
   display: flex;
   align-items: center;
