@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import DashboardCard from "../components/DashboardCard";
 import { SkeletonCard } from "../components/Skeleton";
 import { getNextCategory, getStats } from "../services/gymApi";
@@ -80,7 +81,7 @@ function GymHome() {
 
               <div className="dash-card">
                 <div className="dash-card-head">
-                  <span className="dash-card-icon">📅</span>
+                  <span className="dash-card-icon">🗓️</span>
                   <span className="dash-card-name">This Week</span>
                 </div>
                 <div className="dash-card-body">
@@ -113,10 +114,19 @@ function GymHome() {
             </div>
           )}
 
-          <div className="dash-grid">
-            <DashboardCard to="/gym/log" icon="＋" title="Log Workout" />
-            <DashboardCard to="/gym/insights" icon="📊" title="Insights" />
-            <DashboardCard to="/gym/history" icon="📜" title="History" wide />
+          <div className="gym-quick-actions">
+            <Link to="/gym/log" className="gym-quick-action">
+              <span className="gym-quick-action-icon">＋</span>
+              <span>Log Workout</span>
+            </Link>
+            <Link to="/gym/insights" className="gym-quick-action">
+              <span className="gym-quick-action-icon">📊</span>
+              <span>Insights</span>
+            </Link>
+            <Link to="/gym/history" className="gym-quick-action">
+              <span className="gym-quick-action-icon">📜</span>
+              <span>History</span>
+            </Link>
           </div>
         </>
       )}
