@@ -7,7 +7,7 @@ const TABS: { to: string; icon: string; label: string }[] = [
   { to: "/skincare", icon: "🧴", label: "Skin" },
   // { to: "/weight", icon: "⚖️", label: "Weight" },
   { to: "/water", icon: "💧", label: "Water" },
-  { to: "/settings", icon: "⚙️", label: "Settings" },
+  { to: "/settings", icon: "👤", label: "Me" },
 ];
 
 function BottomNavigation() {
@@ -18,7 +18,9 @@ function BottomNavigation() {
           key={tab.to}
           to={tab.to}
           end={tab.to === "/"}
-          className="bottom-nav-tab"
+          className={({ isActive }) =>
+            isActive ? "bottom-nav-tab active" : "bottom-nav-tab"
+          }
         >
           <span className="bottom-nav-icon">{tab.icon}</span>
           <span className="bottom-nav-label">{tab.label}</span>

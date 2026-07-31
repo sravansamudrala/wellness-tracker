@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import ProfileSettingsSection from "../components/settings/ProfileSettingsSection";
 import ReminderSettingsSection from "../components/settings/ReminderSettingsSection";
+import AboutSection from "../components/settings/AboutSection";
 import LogoutSection from "../components/settings/LogoutSection";
 
 function Settings() {
@@ -11,7 +12,7 @@ function Settings() {
 
   return (
     <div className="settings-container">
-      <h2>⚙️ Settings</h2>
+      <h2>👤 Me</h2>
 
       <details
         className="settings-card"
@@ -32,6 +33,8 @@ function Settings() {
         <summary>🔔 Skincare Reminders</summary>
         {remindersOpened && <ReminderSettingsSection />}
       </details>
+
+      <AboutSection />
 
       <LogoutSection onLogout={logout} />
     </div>
