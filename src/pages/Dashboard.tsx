@@ -3,6 +3,7 @@ import DashboardCard from "../components/DashboardCard";
 import { getToday } from "../services/skincareApi";
 import { getNextCategory } from "../services/gymApi";
 import { getWaterToday, getWaterSettings } from "../services/waterApi";
+import { getToday as getFoodToday } from "../services/foodApi";
 
 function Dashboard() {
   const [skincareProgress, setSkincareProgress] = useState<number | null>(null);
@@ -12,6 +13,8 @@ function Dashboard() {
   const [waterLiters, setWaterLiters] = useState<number | null>(null);
   const [waterGoalLiters, setWaterGoalLiters] = useState<number | null>(null);
   const [waterLoading, setWaterLoading] = useState(true);
+  const [foodCalories, setFoodCalories] = useState<number | null>(null);
+  const [foodLoading, setFoodLoading] = useState(true);
 
   useEffect(() => {
     let cancelled = false;
@@ -58,6 +61,27 @@ function Dashboard() {
     }
 
     loadGym();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    async function loadFood() {
+      try {
+        const data = await getFoodToday();
+        if (cancelled) return;
+        setFoodCalories(data.total_calories);
+      } catch {
+        // Leave calories unknown if the request fails.
+      } finally {
+        if (!cancelled) setFoodLoading(false);
+      }
+    }
+
+    loadFood();
     return () => {
       cancelled = true;
     };
@@ -126,8 +150,8 @@ function Dashboard() {
           <p className="dash-value">{skincareProgress ?? 0}% complete</p>
         </DashboardCard>
 
-        <DashboardCard to="/food" icon="🥗" title="Food">
-          <p className="dash-value dash-muted">Coming soon</p>
+        <DashboardCard to="/food" icon="🥗" title="Food" loading={foodLoading}>
+          <p className="dash-value">{foodCalories ?? 0} kcal</p>
         </DashboardCard>
 
         <DashboardCard to="/weight" icon="⚖️" title="Weight">

@@ -1555,3 +1555,184 @@ ul > p {
   font-size: 14px;
   padding: 10px;
 }
+
+/* ----- Food ----- */
+
+.food-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 20px 100px;
+}
+
+.food-header-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.food-header-row h2 {
+  margin: 0;
+}
+
+.food-icon-btn {
+  position: absolute;
+  right: 0;
+  width: auto;
+  padding: 6px 8px;
+  background: none;
+  box-shadow: none;
+  border: none;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.food-total-calories {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text-h);
+  margin: 4px 0;
+}
+
+.food-add-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 20px;
+}
+
+.food-add-row input {
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 16px; /* avoid iOS zoom */
+}
+
+.food-add-row input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.food-macro-row {
+  display: flex;
+  gap: 8px;
+}
+
+.food-macro-row input {
+  flex: 1;
+  min-width: 0;
+}
+
+.food-entry-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  gap: 8px;
+}
+
+.food-entry-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.food-entry-name {
+  color: var(--text-h);
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.food-entry-detail {
+  color: var(--text);
+  font-size: 13px;
+}
+
+.food-icon-btn-inline {
+  width: auto;
+  flex-shrink: 0;
+  padding: 6px 8px;
+  background: transparent;
+  box-shadow: none;
+  font-size: 18px;
+}
+
+.food-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, 0.45);
+}
+
+.food-modal {
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  overflow-y: auto;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 20px;
+  color: var(--text-h);
+}
+
+.food-modal h3 {
+  margin-top: 0;
+}
+
+.food-modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.food-modal-actions button {
+  width: auto;
+  flex: 1;
+}
+
+.food-review-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 0;
+  border-top: 1px solid var(--border);
+}
+
+.food-review-item input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 10px;
+  accent-color: var(--accent);
+  flex-shrink: 0;
+}
+
+.food-review-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+}
+
+.food-review-fields input {
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text-h);
+  font-size: 16px; /* avoid iOS zoom */
+}
