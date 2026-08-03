@@ -56,6 +56,7 @@ export interface InsightsMeter {
   status: "active" | "standby";
   cumulative_units: number;
   last_reading: Reading | null;
+  last_billed_reading: Reading | null;
   days_since_bill: number | null;
   current_bracket: SlabBracket | null;
   next_slab_min: number | null;
