@@ -156,6 +156,12 @@ function Electricity() {
                 </p>
               )}
 
+              <p className="electricity-meta">
+                {meter.last_billed_reading
+                  ? `last billed ${meter.last_billed_reading.reading_value} · ${meter.last_billed_reading.reading_date}`
+                  : "no bill logged yet"}
+              </p>
+
               {meter.current_bracket && (
                 <>
                   <div className="electricity-slab-bar">
