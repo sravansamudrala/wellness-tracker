@@ -21,6 +21,8 @@ export interface Meter {
   last_billed_reading_id: string | null;
   created_at: string;
   slab_thresholds: SlabThreshold[];
+  is_owner: boolean;
+  shared_with: string[];
 }
 
 export interface Reading {
@@ -54,6 +56,8 @@ export interface InsightsMeter {
   label: string;
   meter_number: string | null;
   status: "active" | "standby";
+  is_owner: boolean;
+  shared_with: string[];
   cumulative_units: number;
   last_reading: Reading | null;
   last_billed_reading: Reading | null;
@@ -80,6 +84,13 @@ export const createMeter = async (payload: {
 
 export const listMeters = async (): Promise<Meter[]> => {
   const res = await api.get<Meter[]>("/api/v1/electricity/meters");
+  return res.data;
+};
+
+export const shareMeter = async (meterId: string, email: string): Promise<Meter> => {
+  const res = await api.post<Meter>(`/api/v1/electricity/meters/${meterId}/share`, {
+    email,
+  });
   return res.data;
 };
 
