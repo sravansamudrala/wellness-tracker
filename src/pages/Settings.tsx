@@ -2,13 +2,15 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import ProfileSettingsSection from "../components/settings/ProfileSettingsSection";
 import ReminderSettingsSection from "../components/settings/ReminderSettingsSection";
+import ElectricitySharingSection from "../components/settings/ElectricitySharingSection";
 import AboutSection from "../components/settings/AboutSection";
 import LogoutSection from "../components/settings/LogoutSection";
 
 function Settings() {
-  const { logout } = useAuth();
+  const { logout, hasFeature } = useAuth();
   const [profileOpened, setProfileOpened] = useState(false);
   const [remindersOpened, setRemindersOpened] = useState(false);
+  const [electricitySharingOpened, setElectricitySharingOpened] = useState(false);
 
   return (
     <div className="settings-container">
@@ -33,6 +35,18 @@ function Settings() {
         <summary>🔔 Skincare Reminders</summary>
         {remindersOpened && <ReminderSettingsSection />}
       </details>
+
+      {hasFeature("electricity_tracker") && (
+        <details
+          className="settings-card"
+          onToggle={(e) => {
+            if (e.currentTarget.open) setElectricitySharingOpened(true);
+          }}
+        >
+          <summary>⚡ Share Electricity Meters</summary>
+          {electricitySharingOpened && <ElectricitySharingSection />}
+        </details>
+      )}
 
       <AboutSection />
 

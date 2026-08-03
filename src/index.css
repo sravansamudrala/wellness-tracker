@@ -643,6 +643,25 @@ ul > p {
   margin-top: 16px;
 }
 
+.settings-field-stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.electricity-share-row {
+  display: flex;
+  gap: 8px;
+}
+
+.electricity-share-row input {
+  flex: 1;
+}
+
+.electricity-share-row .settings-save-btn {
+  margin-top: 0;
+}
+
 /* ----- Gym: Log Workout (freestyle category checklist) ----- */
 
 .gym-log-section {
