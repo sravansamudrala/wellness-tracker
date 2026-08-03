@@ -17,9 +17,12 @@ import GymLog from "./pages/GymLog";
 import GymHistory from "./pages/GymHistory";
 import GymSessionDetail from "./pages/GymSessionDetail";
 import GymInsights from "./pages/GymInsights";
+import Electricity from "./pages/Electricity";
+import ElectricityLogReading from "./pages/ElectricityLogReading";
+import ElectricitySwitchMeter from "./pages/ElectricitySwitchMeter";
 
 function App() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, hasFeature } = useAuth();
 
   return (
     <>
@@ -47,6 +50,13 @@ function App() {
             <Route path="/gym/insights" element={<GymInsights />} />
             <Route path="/gym/history" element={<GymHistory />} />
             <Route path="/gym/history/:sessionId" element={<GymSessionDetail />} />
+            {hasFeature("electricity_tracker") && (
+              <>
+                <Route path="/electricity" element={<Electricity />} />
+                <Route path="/electricity/log" element={<ElectricityLogReading />} />
+                <Route path="/electricity/switch" element={<ElectricitySwitchMeter />} />
+              </>
+            )}
           </>
         ) : (
           // Not logged in → any route falls through to the login screen.
