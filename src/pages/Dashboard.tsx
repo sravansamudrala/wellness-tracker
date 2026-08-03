@@ -1,11 +1,16 @@
 import { useEffect, useState } from "react";
 import DashboardCard from "../components/DashboardCard";
+import { useAuth } from "../context/AuthContext";
 import { getToday } from "../services/skincareApi";
 import { getNextCategory } from "../services/gymApi";
 import { getWaterToday, getWaterSettings } from "../services/waterApi";
 import { getToday as getFoodToday } from "../services/foodApi";
+import { getInsights } from "../services/electricityApi";
 
 function Dashboard() {
+  const { hasFeature } = useAuth();
+  const hasElectricity = hasFeature("electricity_tracker");
+
   const [skincareProgress, setSkincareProgress] = useState<number | null>(null);
   const [skincareLoading, setSkincareLoading] = useState(true);
   const [gymSummary, setGymSummary] = useState<string | null>(null);
@@ -15,6 +20,10 @@ function Dashboard() {
   const [waterLoading, setWaterLoading] = useState(true);
   const [foodCalories, setFoodCalories] = useState<number | null>(null);
   const [foodLoading, setFoodLoading] = useState(true);
+  const [electricitySummary, setElectricitySummary] = useState<string | null>(null);
+  // Starts false (not loading) when the flag is off, since the effect below
+  // never fires a fetch in that case — the card doesn't render either way.
+  const [electricityLoading, setElectricityLoading] = useState(hasElectricity);
 
   useEffect(() => {
     let cancelled = false;
@@ -88,6 +97,31 @@ function Dashboard() {
   }, []);
 
   useEffect(() => {
+    if (!hasElectricity) return;
+    let cancelled = false;
+
+    async function loadElectricity() {
+      try {
+        const { meters } = await getInsights();
+        if (cancelled) return;
+        const active = meters.find((m) => m.status === "active");
+        setElectricitySummary(
+          active ? `${active.label} — ${active.cumulative_units}u` : "No meters yet"
+        );
+      } catch {
+        // Leave summary unknown if the request fails.
+      } finally {
+        if (!cancelled) setElectricityLoading(false);
+      }
+    }
+
+    loadElectricity();
+    return () => {
+      cancelled = true;
+    };
+  }, [hasElectricity]);
+
+  useEffect(() => {
     let cancelled = false;
 
     async function loadWater() {
@@ -157,6 +191,17 @@ function Dashboard() {
         <DashboardCard to="/weight" icon="⚖️" title="Weight">
           <p className="dash-value dash-muted">Coming soon</p>
         </DashboardCard>
+
+        {hasElectricity && (
+          <DashboardCard
+            to="/electricity"
+            icon="⚡"
+            title="Electricity"
+            loading={electricityLoading}
+          >
+            <p className="dash-value">{electricitySummary ?? "—"}</p>
+          </DashboardCard>
+        )}
       </div>
     </div>
   );
