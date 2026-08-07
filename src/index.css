@@ -21,7 +21,7 @@
 
   font: 18px/145% var(--sans);
   letter-spacing: 0.18px;
-  color-scheme: light dark;
+  color-scheme: light;
   color: var(--text);
   background: var(--bg);
   font-synthesis: none;
@@ -34,28 +34,27 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px,
-      rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-    --page-bg: #16171d;
-    --card-bg: #1f2028;
-    --success: #4ade80;
-    --success-bg: rgba(74, 222, 128, 0.15);
-  }
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --text: #9ca3af;
+  --text-h: #f3f4f6;
+  --bg: #16171d;
+  --border: #2e303a;
+  --code-bg: #1f2028;
+  --accent: #c084fc;
+  --accent-bg: rgba(192, 132, 252, 0.15);
+  --accent-border: rgba(192, 132, 252, 0.5);
+  --social-bg: rgba(47, 48, 58, 0.5);
+  --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px,
+    rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+  --page-bg: #16171d;
+  --card-bg: #1f2028;
+  --success: #4ade80;
+  --success-bg: rgba(74, 222, 128, 0.15);
+}
 
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+:root[data-theme="dark"] #social .button-icon {
+  filter: invert(1) brightness(2);
 }
 
 #root {
@@ -299,11 +298,16 @@ ul > p {
 }
 
 .dash-card {
+  --card-accent-bg: color-mix(in srgb, var(--card-accent, var(--accent)) 8%, var(--card-bg));
   display: flex;
   flex-direction: column;
   gap: 12px;
   min-height: 104px;
-  background: var(--card-bg);
+  background: linear-gradient(
+    165deg,
+    var(--card-accent-bg),
+    var(--card-bg) 65%
+  );
   border: 1px solid var(--border);
   border-radius: 16px;
   box-shadow: var(--shadow);
@@ -318,7 +322,7 @@ ul > p {
 }
 
 .dash-card:hover {
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--card-accent, var(--accent)) 25%, transparent);
 }
 
 .dash-card-wide {
@@ -332,8 +336,16 @@ ul > p {
 }
 
 .dash-card-icon {
-  font-size: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  font-size: 18px;
   line-height: 1;
+  background: color-mix(in srgb, var(--card-accent, var(--accent)) 18%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--card-accent, var(--accent)) 30%, transparent) inset;
 }
 
 .dash-card-name {
@@ -660,6 +672,28 @@ ul > p {
 
 .electricity-share-row .settings-save-btn {
   margin-top: 0;
+}
+
+.settings-segmented {
+  display: flex;
+  gap: 8px;
+}
+
+.settings-segmented-option {
+  flex: 1;
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.settings-segmented-option.is-active {
+  background: var(--accent-bg);
+  color: var(--accent);
+  border-color: var(--accent-border);
 }
 
 /* ----- Gym: Log Workout (freestyle category checklist) ----- */
@@ -1458,7 +1492,8 @@ ul > p {
 .gym-danger-btn,
 .gym-ghost-btn,
 .gym-remove-btn,
-.gym-range-tab {
+.gym-range-tab,
+.settings-segmented-option {
   box-shadow: none;
 }
 
@@ -1471,10 +1506,14 @@ ul > p {
   .gym-nav-link:hover,
   .gym-card-link:hover,
   .gym-day-btn:hover,
-  .dash-card:hover,
   .skincare-container > a:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.16);
+  }
+
+  .dash-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--card-accent, var(--accent)) 30%, transparent);
   }
 }
 
@@ -1851,11 +1890,9 @@ ul > p {
   --electricity-copper-bg: rgba(201, 106, 59, 0.12);
 }
 
-@media (prefers-color-scheme: dark) {
-  .electricity-container {
-    --electricity-copper: #e8925c;
-    --electricity-copper-bg: rgba(232, 146, 92, 0.18);
-  }
+:root[data-theme="dark"] .electricity-container {
+  --electricity-copper: #e8925c;
+  --electricity-copper-bg: rgba(232, 146, 92, 0.18);
 }
 
 .electricity-meter-card {

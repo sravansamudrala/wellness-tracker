@@ -3,6 +3,7 @@ import { useAuth } from "../context/AuthContext";
 import ProfileSettingsSection from "../components/settings/ProfileSettingsSection";
 import ReminderSettingsSection from "../components/settings/ReminderSettingsSection";
 import ElectricitySharingSection from "../components/settings/ElectricitySharingSection";
+import AppearanceSettingsSection from "../components/settings/AppearanceSettingsSection";
 import AboutSection from "../components/settings/AboutSection";
 import LogoutSection from "../components/settings/LogoutSection";
 
@@ -35,6 +36,8 @@ function Settings() {
         <summary>🔔 Skincare Reminders</summary>
         {remindersOpened && <ReminderSettingsSection />}
       </details>
+
+      <AppearanceSettingsSection />
 
       {hasFeature("electricity_tracker") && (
         <details

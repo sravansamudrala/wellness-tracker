@@ -156,6 +156,7 @@ function Dashboard() {
           to="/gym"
           icon="🏋️"
           title="Gym"
+          color="#ff6b35"
           loading={gymLoading}
           wide
         >
@@ -166,6 +167,7 @@ function Dashboard() {
           to="/water"
           icon="💧"
           title="Water"
+          color="#2196f3"
           loading={waterLoading}
         >
           <p className="dash-value">
@@ -178,17 +180,24 @@ function Dashboard() {
           to="/skincare"
           icon="🧴"
           title="Skincare"
+          color="#ec4899"
           loading={skincareLoading}
         >
           <progress value={skincareProgress ?? 0} max="100" />
           <p className="dash-value">{skincareProgress ?? 0}% complete</p>
         </DashboardCard>
 
-        <DashboardCard to="/food" icon="🥗" title="Food" loading={foodLoading}>
+        <DashboardCard
+          to="/food"
+          icon="🥗"
+          title="Food"
+          color="#22c55e"
+          loading={foodLoading}
+        >
           <p className="dash-value">{foodCalories ?? 0} kcal</p>
         </DashboardCard>
 
-        <DashboardCard to="/weight" icon="⚖️" title="Weight">
+        <DashboardCard to="/weight" icon="⚖️" title="Weight" color="#6366f1">
           <p className="dash-value dash-muted">Coming soon</p>
         </DashboardCard>
 
@@ -197,6 +206,7 @@ function Dashboard() {
             to="/electricity"
             icon="⚡"
             title="Electricity"
+            color="#c96a3b"
             loading={electricityLoading}
           >
             <p className="dash-value">{electricitySummary ?? "—"}</p>
