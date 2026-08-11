@@ -116,6 +116,27 @@ function Water() {
     }
   };
 
+  const persistRemindersEnabled = async (enabled: boolean) => {
+    setSavingReminders(true);
+    setReminderSaveError(false);
+
+    try {
+      const updatedSettings = await updateWaterSettings({
+        daily_goal_ml: settings?.daily_goal_ml ?? 2000,
+        reminders_enabled: enabled,
+        reminder_start_time: reminderStartTime,
+        reminder_end_time: reminderEndTime,
+      });
+      setSettings(updatedSettings);
+    } catch (err) {
+      console.error(err);
+      setReminderSaveError(true);
+      setRemindersEnabled(!enabled);
+    } finally {
+      setSavingReminders(false);
+    }
+  };
+
   // Turning the toggle on must register a push subscription first (needs the
   // permission prompt, which iOS only allows from a user gesture like this).
   async function handleRemindersToggle(checked: boolean) {
@@ -123,6 +144,7 @@ function Water() {
 
     if (!checked) {
       setRemindersEnabled(false);
+      await persistRemindersEnabled(false);
       return;
     }
 
@@ -130,6 +152,7 @@ function Water() {
       const subscribed = await subscribeToPush();
       if (subscribed) {
         setRemindersEnabled(true);
+        await persistRemindersEnabled(true);
       } else {
         setRemindersEnabled(false);
         setPushError("Notification permission was denied.");
@@ -204,7 +227,12 @@ function Water() {
           <div className="water-card water-hero-card">
             <div className="water-hero">
               <svg className="water-ring" viewBox="0 0 120 120">
-                <circle className="water-ring-track" cx="60" cy="60" r={RING_RADIUS} />
+                <circle
+                  className="water-ring-track"
+                  cx="60"
+                  cy="60"
+                  r={RING_RADIUS}
+                />
                 <circle
                   className="water-ring-fill"
                   cx="60"
@@ -220,7 +248,9 @@ function Water() {
               </div>
             </div>
 
-            {today && <p className="water-hydration-message">{today.message}</p>}
+            {today && (
+              <p className="water-hydration-message">{today.message}</p>
+            )}
 
             <div className="water-goal-row">
               {editingGoal ? (
@@ -270,7 +300,9 @@ function Water() {
                 <span className="water-stat-label">Best</span>
               </div>
               <div className="water-stat">
-                <span className="water-stat-value">{stats.average_completion}%</span>
+                <span className="water-stat-value">
+                  {stats.average_completion}%
+                </span>
                 <span className="water-stat-label">Avg</span>
               </div>
             </div>
@@ -288,7 +320,6 @@ function Water() {
               +1000ml
             </button>
           </div>
-
         </>
       )}
 
@@ -339,7 +370,8 @@ function Water() {
 
             {reminderSaveError && (
               <p className="status-error">
-                Couldn't save reminder settings — check your connection and try again.
+                Couldn't save reminder settings — check your connection and try
+                again.
               </p>
             )}
 
