@@ -67,8 +67,24 @@ export interface InsightsMeter {
   nudge_text: string | null;
 }
 
+export interface SlabRecommendation {
+  active_meter_id: string;
+  active_meter_label: string;
+  standby_meter_id: string;
+  standby_meter_label: string;
+  active_cumulative_units: number;
+  active_next_slab_min: number;
+  active_operational_threshold: number;
+  standby_cumulative_units: number;
+  standby_next_slab_min: number | null;
+  standby_operational_threshold: number | null;
+  recommended_switch_date: string; // ISO date, e.g. "2026-08-26"
+  explanation: string;
+}
+
 export interface InsightsResponse {
   meters: InsightsMeter[];
+  slab_recommendation: SlabRecommendation | null;
 }
 
 // ----- Meters -----

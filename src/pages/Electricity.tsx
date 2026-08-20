@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { SkeletonCard } from "../components/Skeleton";
 import { createMeter, getInsights } from "../services/electricityApi";
-import type { InsightsMeter } from "../services/electricityApi";
+import type { InsightsMeter, SlabRecommendation } from "../services/electricityApi";
 
 const MAX_METERS = 2;
 
@@ -42,6 +42,7 @@ function parseBreakpoints(text: string): { slab_min: number; slab_max: number | 
 
 function Electricity() {
   const [meters, setMeters] = useState<InsightsMeter[]>([]);
+  const [recommendation, setRecommendation] = useState<SlabRecommendation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [reloadKey, setReloadKey] = useState(0);
@@ -57,9 +58,10 @@ function Electricity() {
 
     async function load() {
       try {
-        const { meters: data } = await getInsights();
+        const { meters: data, slab_recommendation } = await getInsights();
         if (cancelled) return;
         setMeters(data);
+        setRecommendation(slab_recommendation);
         setError(false);
       } catch {
         if (!cancelled) setError(true);
@@ -122,6 +124,49 @@ function Electricity() {
 
       {!loading && !error && (
         <>
+          {recommendation && (
+            <div className="electricity-recommendation-card">
+              <h3>⚡ Consider switching meters</h3>
+
+              <div className="electricity-recommendation-compare">
+                <div>
+                  <span className="gym-badge electricity-badge-active">Active</span>
+                  <p className="electricity-recommendation-meter-label">
+                    {recommendation.active_meter_label}
+                  </p>
+                  <p className="electricity-recommendation-units">
+                    {recommendation.active_cumulative_units} units
+                  </p>
+                  <p className="dash-muted">
+                    limit ~{recommendation.active_operational_threshold} (slab at{" "}
+                    {recommendation.active_next_slab_min})
+                  </p>
+                </div>
+                <div>
+                  <span className="gym-badge electricity-badge-standby">Standby</span>
+                  <p className="electricity-recommendation-meter-label">
+                    {recommendation.standby_meter_label}
+                  </p>
+                  <p className="electricity-recommendation-units">
+                    {recommendation.standby_cumulative_units} units
+                  </p>
+                  {recommendation.standby_operational_threshold != null && (
+                    <p className="dash-muted">
+                      limit ~{recommendation.standby_operational_threshold} (slab at{" "}
+                      {recommendation.standby_next_slab_min})
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <p className="electricity-nudge">{recommendation.explanation}</p>
+
+              <p className="electricity-recommendation-date">
+                Recommended by {recommendation.recommended_switch_date}
+              </p>
+            </div>
+          )}
+
           {meters.map((meter) => (
             <div key={meter.meter_id} className="electricity-meter-card">
               <div className="electricity-meter-head">

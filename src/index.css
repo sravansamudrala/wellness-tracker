@@ -1985,6 +1985,49 @@ ul > p {
   font-size: 13px;
 }
 
+.electricity-recommendation-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+  margin-bottom: 16px;
+}
+
+.electricity-recommendation-card h3 {
+  margin: 0 0 12px;
+  color: var(--text-h);
+}
+
+.electricity-recommendation-compare {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 4px;
+}
+
+.electricity-recommendation-compare > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.electricity-recommendation-meter-label {
+  margin: 6px 0 2px;
+  color: var(--text-h);
+  font-weight: 600;
+}
+
+.electricity-recommendation-units {
+  margin: 0 0 2px;
+  font-family: var(--mono);
+  color: var(--text-h);
+}
+
+.electricity-recommendation-date {
+  margin: 10px 0 0;
+  font-size: 12px;
+  color: var(--text);
+}
+
 .electricity-actions {
   display: flex;
   gap: 10px;
