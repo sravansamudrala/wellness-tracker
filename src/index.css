@@ -2442,9 +2442,23 @@ ul > p {
 .electricity-setup-form input[type="date"] {
   /* Native date pickers (esp. iOS/Android mobile browsers) render their own
      day/month/year segments + calendar icon at a fixed intrinsic width that
-     doesn't always shrink to fit — tighter padding gives it more room. */
+     can render wider than width:100% actually specifies — clamp it and
+     shrink the icon's own reserved space below. */
+  max-width: 100%;
   padding-left: 8px;
   padding-right: 8px;
+  /* iOS Safari centers type="date" content by default, unlike every other
+     input here — left-align it to match. */
+  text-align: left;
+}
+
+.electricity-setup-form input[type="date"]::-webkit-date-and-time-value {
+  text-align: left;
+}
+
+.electricity-setup-form input[type="date"]::-webkit-calendar-picker-indicator {
+  margin: 0;
+  padding: 0;
 }
 
 .electricity-setup-form input:focus,
