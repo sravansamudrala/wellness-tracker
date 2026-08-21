@@ -1882,6 +1882,7 @@ ul > p {
   width: 100%;
   max-width: 500px;
   margin: 0 auto;
+  overflow-x: hidden;
   padding: 20px 16px 110px;
   box-sizing: border-box;
   /* Scoped accent, distinct from the app's global purple --accent. */
@@ -2425,6 +2426,7 @@ ul > p {
 .electricity-setup-form select {
   box-sizing: border-box;
   width: 100%;
+  min-width: 0;
   padding: 12px;
   border: 1px solid var(--border);
   border-radius: 10px;
@@ -2432,6 +2434,14 @@ ul > p {
   color: var(--text-h);
   font-size: 16px; /* avoid iOS zoom */
   transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.electricity-setup-form input[type="date"] {
+  /* Native date pickers (esp. iOS/Android mobile browsers) render their own
+     day/month/year segments + calendar icon at a fixed intrinsic width that
+     doesn't always shrink to fit — tighter padding gives it more room. */
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .electricity-setup-form input:focus,
