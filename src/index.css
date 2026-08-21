@@ -2440,10 +2440,13 @@ ul > p {
 }
 
 .electricity-setup-form input[type="date"] {
-  /* Native date pickers (esp. iOS/Android mobile browsers) render their own
-     day/month/year segments + calendar icon at a fixed intrinsic width that
-     can render wider than width:100% actually specifies — clamp it and
-     shrink the icon's own reserved space below. */
+  /* Native date pickers (esp. iOS/Android mobile browsers) size themselves
+     using their own "textfield" appearance, which can render past
+     width:100% regardless of max-width. Dropping the native appearance
+     makes the browser lay it out like a plain input — the calendar icon
+     pseudo-element below still renders on top of our own border/background. */
+  -webkit-appearance: none;
+  appearance: none;
   max-width: 100%;
   padding-left: 8px;
   padding-right: 8px;
