@@ -1884,47 +1884,237 @@ ul > p {
   margin: 0 auto;
   padding: 20px 16px 110px;
   box-sizing: border-box;
-  /* Scoped accent, distinct from the app's global purple --accent — matches
-     the reviewed mockup's petrol/copper palette without touching the theme. */
+  /* Scoped accent, distinct from the app's global purple --accent. */
   --electricity-copper: #c96a3b;
   --electricity-copper-bg: rgba(201, 106, 59, 0.12);
+  --electricity-safe: var(--success);
+  --electricity-safe-bg: var(--success-bg);
+  --electricity-warn: #b45309;
+  --electricity-warn-bg: rgba(180, 83, 9, 0.12);
+  --electricity-danger: #dc2626;
+  --electricity-danger-bg: rgba(220, 38, 38, 0.12);
+  --electricity-ink: #1f1b16;
+  --electricity-ink-text: #fff;
 }
 
 :root[data-theme="dark"] .electricity-container {
   --electricity-copper: #e8925c;
   --electricity-copper-bg: rgba(232, 146, 92, 0.18);
+  --electricity-warn: #f59e0b;
+  --electricity-warn-bg: rgba(245, 158, 11, 0.18);
+  --electricity-danger: #f87171;
+  --electricity-danger-bg: rgba(248, 113, 113, 0.18);
+  --electricity-ink: #f3f4f6;
+  --electricity-ink-text: #16171d;
+}
+
+.electricity-page-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.electricity-page-head h2,
+.electricity-setup-form h3 {
+  margin: 0;
+  text-align: left;
+}
+
+.electricity-page-head h2 {
+  font-size: 24px;
+}
+
+.electricity-back-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex-shrink: 0;
+  font-size: 20px;
+  color: var(--text);
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.electricity-tagline {
+  margin: 0 0 16px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+/* ----- Shared: icon bubbles, meta rows, status pills, chevron ----- */
+
+.electricity-icon-bubble {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+  background: var(--electricity-copper);
+  color: #fff;
+}
+
+.electricity-status-pill {
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.electricity-status-pill.is-safe {
+  color: var(--electricity-safe);
+}
+
+.electricity-status-pill.is-warn {
+  color: var(--electricity-warn);
+}
+
+.electricity-status-pill.is-danger {
+  color: var(--electricity-danger);
+}
+
+.electricity-chevron {
+  display: inline-block;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1;
+  transition: transform 0.2s ease;
+}
+
+.electricity-chevron.is-expanded {
+  transform: rotate(90deg);
+}
+
+/* ----- Meter cards (collapsible, ring-based) ----- */
+
+.electricity-meters-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .electricity-meter-card {
   background: var(--card-bg);
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 18px;
   box-shadow: var(--shadow);
   padding: 18px;
-  margin-bottom: 16px;
 }
 
-.electricity-meter-head {
+.electricity-meter-summary {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 10px;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.electricity-meter-head h3 {
-  margin: 0;
+.electricity-meter-summary:active {
+  transform: none;
+}
+
+.electricity-ring-wrap {
+  position: relative;
+  width: 60px;
+  height: 60px;
+  flex-shrink: 0;
+}
+
+.electricity-ring {
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg);
+}
+
+.electricity-ring-track,
+.electricity-ring-fill {
+  fill: none;
+  stroke-width: 6;
+}
+
+.electricity-ring-track {
+  stroke: var(--border);
+}
+
+.electricity-ring-fill {
+  stroke: var(--electricity-safe);
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.4s ease, stroke 0.2s ease;
+}
+
+.electricity-ring-fill.is-warn {
+  stroke: var(--electricity-warn);
+}
+
+.electricity-ring-fill.is-danger {
+  stroke: var(--electricity-danger);
+}
+
+.electricity-ring-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
   color: var(--text-h);
 }
 
-.electricity-meter-number {
-  margin: 2px 0 0;
-  font-size: 12px;
+.electricity-meter-summary-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.electricity-meter-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.electricity-meter-name-row h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-h);
+  text-transform: none;
+  letter-spacing: normal;
+}
+
+.electricity-meter-name-row .electricity-badge-chevron {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.electricity-meter-units {
+  margin: 0;
+  font-size: 13px;
   color: var(--text);
 }
 
 .electricity-badge-active {
-  color: var(--electricity-copper);
-  background: var(--electricity-copper-bg);
+  background: var(--electricity-copper);
+  color: #fff;
 }
 
 .electricity-badge-standby {
@@ -1932,140 +2122,267 @@ ul > p {
   background: var(--code-bg);
 }
 
-.electricity-odometer-row {
+.electricity-meter-details {
+  margin-top: 18px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  margin: 14px 0 6px;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.electricity-odometer {
-  font-family: var(--mono);
-  font-size: 34px;
-  font-weight: 700;
-  letter-spacing: 1px;
-  color: var(--text-h);
+.electricity-detail-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
 }
 
-.electricity-meta {
-  margin: 0 0 12px;
-  font-size: 12px;
+.electricity-detail-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
   color: var(--text);
 }
 
-.electricity-slab-bar {
-  width: 100%;
-  height: 10px;
-  border-radius: 999px;
-  background: var(--accent-bg);
-  overflow: hidden;
+.electricity-detail-value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text-h);
 }
 
-.electricity-slab-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--success), var(--electricity-copper));
-  transition: width 0.3s ease;
-}
-
-.electricity-slab-labels {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 6px;
+.electricity-tier-info {
+  margin: 0;
   font-size: 12px;
   color: var(--text);
 }
 
 .electricity-nudge {
-  margin-top: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: 0;
   padding: 10px 12px;
   border-radius: 10px;
   background: var(--electricity-copper-bg);
   color: var(--text-h);
   font-size: 13px;
+  line-height: 1.4;
 }
 
+/* ----- Recommendation banner (always shown when 2 meters exist) ----- */
+
 .electricity-recommendation-card {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 18px;
+  background: var(--electricity-copper-bg);
+  border-radius: 20px;
+  padding: 20px;
   margin-bottom: 16px;
 }
 
-.electricity-recommendation-card h3 {
-  margin: 0 0 12px;
-  color: var(--text-h);
-}
-
-.electricity-recommendation-compare {
+.electricity-recommendation-head {
   display: flex;
-  gap: 16px;
-  margin-bottom: 4px;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 14px;
 }
 
-.electricity-recommendation-compare > div {
-  flex: 1;
-  min-width: 0;
-}
-
-.electricity-recommendation-meter-label {
-  margin: 6px 0 2px;
+.electricity-recommendation-head h3 {
+  margin: 0;
   color: var(--text-h);
-  font-weight: 600;
-}
-
-.electricity-recommendation-units {
-  margin: 0 0 2px;
-  font-family: var(--mono);
-  color: var(--text-h);
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 19px;
+  font-weight: 700;
 }
 
 .electricity-recommendation-date {
-  margin: 10px 0 0;
-  font-size: 12px;
-  color: var(--text);
+  margin: 4px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--electricity-copper);
 }
 
-.electricity-actions {
-  display: flex;
-  gap: 10px;
-  margin: 8px 0 16px;
-}
-
-.electricity-actions a {
-  flex: 1;
-  display: block;
-  text-align: center;
-  padding: 14px;
-  border-radius: 12px;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  transition: transform 0.1s ease, box-shadow 0.2s ease;
-}
-
-.electricity-actions a:active {
-  transform: scale(0.98);
-}
-
-.electricity-btn-secondary {
-  background: var(--card-bg);
-  border: 1px solid var(--border);
+.electricity-recommendation-body {
+  margin: 0 0 18px;
+  font-size: 14px;
+  line-height: 1.5;
   color: var(--text-h);
 }
 
-.electricity-btn-primary {
-  color: #fff;
+.electricity-banner-btn {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
   border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  text-decoration: none;
   background: linear-gradient(
     135deg,
     var(--electricity-copper),
     color-mix(in srgb, var(--electricity-copper), #000 14%)
   );
-  box-shadow: 0 6px 16px var(--electricity-copper-bg);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  transition: transform 0.1s ease, filter 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
 }
+
+.electricity-banner-btn:hover {
+  filter: brightness(1.04);
+}
+
+.electricity-banner-btn:active {
+  transform: scale(0.98);
+}
+
+/* ----- Setup intro / hints ----- */
+
+.electricity-setup-intro {
+  margin: 0 0 14px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+.electricity-field-hint {
+  margin: 0 0 4px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+/* ----- Action buttons ----- */
+
+.electricity-actions {
+  margin: 8px 0 16px;
+}
+
+.electricity-btn-ink {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  text-decoration: none;
+  background: var(--electricity-ink);
+  color: var(--electricity-ink-text);
+  transition: transform 0.1s ease, filter 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.electricity-btn-ink:hover {
+  filter: brightness(1.15);
+}
+
+.electricity-btn-ink:active {
+  transform: scale(0.98);
+}
+
+/* ----- Meter picker (Log Reading step 1) ----- */
+
+.electricity-meter-pick-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.electricity-meter-pick {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px;
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+  transition: border-color 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.electricity-meter-pick:hover {
+  border-color: var(--electricity-copper);
+}
+
+.electricity-meter-pick-main {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.electricity-meter-pick-name {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.electricity-meter-pick-name strong {
+  font-size: 16px;
+  color: var(--text-h);
+}
+
+.electricity-meter-pick-chevron {
+  color: var(--text);
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* ----- Checkbox-style option card (billing reading, switch checkboxes) ----- */
+
+.electricity-checkbox-card {
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-top: 16px;
+  padding: 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.electricity-checkbox-card input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  margin-top: 2px;
+  accent-color: var(--electricity-copper);
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.electricity-checkbox-card-text strong {
+  display: block;
+  font-size: 15px;
+  color: var(--text-h);
+  margin-bottom: 2px;
+}
+
+.electricity-checkbox-card-text span {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.4;
+}
+
+/* ----- Forms (setup, log reading, switch meter) ----- */
 
 .electricity-setup-form {
   background: var(--card-bg);
@@ -2076,6 +2393,21 @@ ul > p {
   margin-bottom: 16px;
 }
 
+.electricity-setup-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.electricity-setup-head h3 {
+  margin: 0;
+  color: var(--text-h);
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 16px;
+}
+
 .electricity-setup-form h3 {
   margin: 0 0 4px;
   color: var(--text-h);
@@ -2084,8 +2416,9 @@ ul > p {
 .electricity-setup-form label {
   display: block;
   font-size: 13px;
-  color: var(--text);
-  margin: 12px 0 4px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 14px 0 4px;
 }
 
 .electricity-setup-form input,
@@ -2098,16 +2431,51 @@ ul > p {
   background: var(--bg);
   color: var(--text-h);
   font-size: 16px; /* avoid iOS zoom */
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 
 .electricity-setup-form input:focus,
 .electricity-setup-form select:focus {
   outline: none;
   border-color: var(--electricity-copper);
+  box-shadow: 0 0 0 3px var(--electricity-copper-bg);
 }
 
 .electricity-setup-form button {
   margin-top: 16px;
+}
+
+.electricity-submit-btn {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(
+    135deg,
+    var(--electricity-copper),
+    color-mix(in srgb, var(--electricity-copper), #000 14%)
+  );
+  box-shadow: 0 6px 16px var(--electricity-copper-bg);
+  cursor: pointer;
+  transition: transform 0.1s ease, filter 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.electricity-submit-btn:hover:not(:disabled) {
+  filter: brightness(1.04);
+}
+
+.electricity-submit-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.electricity-submit-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
 .electricity-ghost-btn {
@@ -2116,22 +2484,6 @@ ul > p {
   color: var(--electricity-copper);
   font-size: 14px;
   padding: 10px;
-}
-
-.electricity-setup-form .electricity-checkbox-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin: 16px 0 0;
-  font-size: 15px;
-  color: var(--text-h);
-  cursor: pointer;
-}
-
-.electricity-checkbox-row input[type="checkbox"] {
-  width: 20px;
-  height: 20px;
-  accent-color: var(--electricity-copper);
-  cursor: pointer;
-  flex-shrink: 0;
+  box-shadow: none;
+  -webkit-tap-highlight-color: transparent;
 }

@@ -17,7 +17,6 @@ function ElectricitySwitchMeter() {
   const [readingDate, setReadingDate] = useState(todayIso());
   const [outgoingValue, setOutgoingValue] = useState("");
   const [incomingValue, setIncomingValue] = useState("");
-  const [isBilled, setIsBilled] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -62,7 +61,6 @@ function ElectricitySwitchMeter() {
         reading_date: readingDate,
         outgoing_reading_value: outVal,
         incoming_reading_value: inVal,
-        is_billed_reading: isBilled,
       });
       setSaved(true);
     } catch (err: any) {
@@ -74,11 +72,12 @@ function ElectricitySwitchMeter() {
 
   return (
     <div className="electricity-container">
-      <h2>🔀 Switch Meter</h2>
-
-      <Link to="/electricity" className="gym-nav-link">
-        ← Back to Electricity
-      </Link>
+      <div className="electricity-page-head">
+        <Link to="/electricity" className="electricity-back-link" aria-label="Back to Electricity">
+          ←
+        </Link>
+        <h2>Switch meter</h2>
+      </div>
 
       {loading && <SkeletonCard lines={4} />}
 
@@ -104,75 +103,82 @@ function ElectricitySwitchMeter() {
       )}
 
       {!loading && !error && outgoing && incoming && !saved && (
-        <div className="electricity-setup-form">
-          {step === 1 ? (
-            <>
-              <h3>Step 1 — Closing reading for {outgoing.label}</h3>
-              <p className="dash-muted">Currently active. This becomes standby.</p>
+        <>
+          <p className="electricity-tagline">
+            Switching moves {outgoing.label} to standby and makes {incoming.label} active. We
+            need today's closing reading on {outgoing.label} and starting reading on{" "}
+            {incoming.label}.
+          </p>
 
-              <label htmlFor="switch-date">Date</label>
-              <input
-                id="switch-date"
-                type="date"
-                value={readingDate}
-                onChange={(e) => setReadingDate(e.target.value)}
-              />
+          <div className="electricity-setup-form">
+            {step === 1 ? (
+              <>
+                <span className="electricity-detail-label">Step 1 of 2</span>
+                <h3>Closing reading — {outgoing.label}</h3>
+                <p className="dash-muted">
+                  This is the last reading before {outgoing.label} becomes standby.
+                </p>
 
-              <label htmlFor="switch-outgoing">
-                {outgoing.label} — closing reading
-              </label>
-              <input
-                id="switch-outgoing"
-                type="number"
-                inputMode="decimal"
-                value={outgoingValue}
-                onChange={(e) => setOutgoingValue(e.target.value)}
-              />
-
-              <label className="electricity-checkbox-row">
+                <label htmlFor="switch-date">Date</label>
                 <input
-                  type="checkbox"
-                  checked={isBilled}
-                  onChange={(e) => setIsBilled(e.target.checked)}
+                  id="switch-date"
+                  type="date"
+                  value={readingDate}
+                  onChange={(e) => setReadingDate(e.target.value)}
                 />
-                This was the bill reading for {outgoing.label}
-              </label>
 
-              <button onClick={() => setStep(2)} disabled={!outgoingValue}>
-                Next
-              </button>
-            </>
-          ) : (
-            <>
-              <h3>Step 2 — Opening reading for {incoming.label}</h3>
-              <p className="dash-muted">Becomes active once you confirm.</p>
+                <label htmlFor="switch-outgoing">Meter reading</label>
+                <input
+                  id="switch-outgoing"
+                  type="number"
+                  inputMode="decimal"
+                  value={outgoingValue}
+                  onChange={(e) => setOutgoingValue(e.target.value)}
+                />
 
-              <label htmlFor="switch-incoming">
-                {incoming.label} — opening reading
-              </label>
-              <input
-                id="switch-incoming"
-                type="number"
-                inputMode="decimal"
-                value={incomingValue}
-                onChange={(e) => setIncomingValue(e.target.value)}
-              />
+                <button
+                  className="electricity-submit-btn"
+                  onClick={() => setStep(2)}
+                  disabled={!outgoingValue}
+                >
+                  Next
+                </button>
+              </>
+            ) : (
+              <>
+                <span className="electricity-detail-label">Step 2 of 2</span>
+                <h3>Starting reading — {incoming.label}</h3>
+                <p className="dash-muted">{incoming.label} becomes active once you confirm.</p>
 
-              {saveError && <p className="status-error">{saveError}</p>}
+                <label htmlFor="switch-incoming">Meter reading</label>
+                <input
+                  id="switch-incoming"
+                  type="number"
+                  inputMode="decimal"
+                  value={incomingValue}
+                  onChange={(e) => setIncomingValue(e.target.value)}
+                />
 
-              <button onClick={confirmSwitch} disabled={saving || !incomingValue}>
-                {saving ? "Switching…" : "Confirm Switch"}
-              </button>
-              <button
-                onClick={() => setStep(1)}
-                disabled={saving}
-                className="electricity-ghost-btn"
-              >
-                ← Back
-              </button>
-            </>
-          )}
-        </div>
+                {saveError && <p className="status-error">{saveError}</p>}
+
+                <button
+                  className="electricity-submit-btn"
+                  onClick={confirmSwitch}
+                  disabled={saving || !incomingValue}
+                >
+                  {saving ? "Switching…" : "Confirm Switch"}
+                </button>
+                <button
+                  onClick={() => setStep(1)}
+                  disabled={saving}
+                  className="electricity-ghost-btn"
+                >
+                  ← Back
+                </button>
+              </>
+            )}
+          </div>
+        </>
       )}
     </div>
   );
