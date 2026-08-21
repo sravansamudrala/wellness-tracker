@@ -2412,6 +2412,9 @@ ul > p {
 .electricity-setup-form h3 {
   margin: 0 0 4px;
   color: var(--text-h);
+  text-transform: none;
+  letter-spacing: normal;
+  font-size: 16px;
 }
 
 .electricity-setup-form label {
