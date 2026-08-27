@@ -33,6 +33,7 @@ export interface Reading {
   units_consumed: number | null;
   entry_method: string;
   is_billed_reading: boolean;
+  billed_amount: number | null;
   created_at: string;
 }
 
@@ -65,6 +66,10 @@ export interface InsightsMeter {
   current_bracket: SlabBracket | null;
   next_slab_min: number | null;
   nudge_text: string | null;
+  daily_rate: number | null;
+  recent_rate: number | null;
+  expected_billing_period_end: string | null;
+  projected_units_at_billing_end: number | null;
 }
 
 export interface SlabRecommendation {
@@ -114,7 +119,12 @@ export const shareMeter = async (meterId: string, email: string): Promise<Meter>
 
 export const createReading = async (
   meterId: string,
-  payload: { reading_value: number; reading_date: string; is_billed_reading?: boolean }
+  payload: {
+    reading_value: number;
+    reading_date: string;
+    is_billed_reading?: boolean;
+    billed_amount?: number;
+  }
 ): Promise<Reading> => {
   const res = await api.post<Reading>(
     `/api/v1/electricity/meters/${meterId}/readings`,
