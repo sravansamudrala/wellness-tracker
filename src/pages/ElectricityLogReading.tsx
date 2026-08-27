@@ -18,6 +18,7 @@ function ElectricityLogReading() {
   const [readingValue, setReadingValue] = useState("");
   const [readingDate, setReadingDate] = useState(todayIso());
   const [isBilled, setIsBilled] = useState(false);
+  const [billAmount, setBillAmount] = useState("");
   const [saving, setSaving] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saved, setSaved] = useState(false);
@@ -60,10 +61,12 @@ function ElectricityLogReading() {
     setSaving(true);
     setSaveError(null);
     try {
+      const amount = Number(billAmount);
       await createReading(meterId, {
         reading_value: value,
         reading_date: readingDate,
         is_billed_reading: isBilled,
+        billed_amount: isBilled && billAmount && Number.isFinite(amount) ? amount : undefined,
       });
       setSaved(true);
     } catch (err: any) {
@@ -179,6 +182,20 @@ function ElectricityLogReading() {
               </span>
             </span>
           </label>
+
+          {isBilled && (
+            <>
+              <label htmlFor="log-bill-amount">Bill amount (₹), optional</label>
+              <input
+                id="log-bill-amount"
+                type="number"
+                inputMode="decimal"
+                placeholder="0"
+                value={billAmount}
+                onChange={(e) => setBillAmount(e.target.value)}
+              />
+            </>
+          )}
 
           <label htmlFor="log-value">{isBilled ? "Reading from your bill" : "Meter reading"}</label>
           <input
